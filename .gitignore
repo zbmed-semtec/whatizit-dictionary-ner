@@ -128,6 +128,10 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# Editors
+.idea/
+.vscode/
+
 # MESH files
 data/input/mesh*.*
 data/input/MESH*.*
