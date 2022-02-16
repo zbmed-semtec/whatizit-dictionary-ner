@@ -1,1 +1,11 @@
+# Processes supported by this code
 
+## Creation of dictionaries for Whatizit
+The creation of dictionaries for Whatizit takes as data input a Biportal-like CSV or RDF file corresponding to a controlled vocabulary. The process creates an MWT file following the specification needed by Whatizit.
+
+**Example with CSV**
+* Using the [EDAM CSV file](../data/input/EDAM.csv) and supposing you are running the code from within the code folder, run the dictionary creation as
+```
+python parse_cv_csv.py --input ../data/input/EDAM.csv --output ../data/output/myEDAM.mwt
+```
+You should get the same output as in the [EDAM MWT dictionary](../data/output/EDAM.mwt)
