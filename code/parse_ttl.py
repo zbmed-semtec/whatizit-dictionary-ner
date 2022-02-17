@@ -24,11 +24,12 @@ def ttl_to_dictionary(ttl_file:str):
     return ttl_dic
 
 def create_mwt_file(dict, output_file):
-    """_summary_
+    """creates a MWT file from a dictionary with IDs as keys and labels, synonyms as values.
+    saves the file to the output_file destination.
 
     Args:
-        dict (_type_): _description_
-        output_file (_type_): _description_
+        dict (dict): Dictionary with IDs as keys and labels, synonyms as values.
+        output_file (str): Path to the output file.
     """
     
     with open(output_file, 'w') as output:
@@ -49,9 +50,9 @@ def create_mwt_file(dict, output_file):
     
 
 
-if __name__ == "__main__":
-    ttl_dic = ttl_to_dictionary("../data/input/AI-RHEUM.ttl")
-    create_mwt_file(ttl_dic, "../data/output/AI-RHEUM.mwt")
+# if __name__ == "__main__":
+#     ttl_dic = ttl_to_dictionary("../data/input/EDAM.xrdf")
+#     create_mwt_file(ttl_dic, "../data/output/EDAM_xrdf_to_mwt.mwt")
     
                 
     
