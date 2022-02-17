@@ -17,9 +17,9 @@ def ttl_to_dictionary(ttl_file:str):
     
     for id in g.subject_objects(SKOS.notation):
         for label in g.subject_objects(SKOS.prefLabel):
-            ttl_dic[id[1]] = [str(label[1])]
+            ttl_dic[id[0]] = [str(label[1])]
         for synonym in g.subject_objects(SKOS.altLabel):
-            ttl_dic[id[1]].append(str(synonym[1]))
+            ttl_dic[id[0]].append(str(synonym[1]))
     
     return ttl_dic
 
@@ -50,10 +50,9 @@ def create_mwt_file(dict, output_file):
     
 
 
-# if __name__ == "__main__":
-#     ttl_dic = ttl_to_dictionary("../data/input/EDAM.xrdf")
-#     create_mwt_file(ttl_dic, "../data/output/EDAM_xrdf_to_mwt.mwt")
-    
+if __name__ == "__main__":
+    ttl_dic = ttl_to_dictionary("../data/input/AI-RHEUM.ttl")
+    create_mwt_file(ttl_dic, "../data/output/AI-RHEUM.mwt")
                 
     
     
