@@ -9,7 +9,7 @@ We do not include the terms which are obsolete from the CSV file in our output M
 **Example with CSV**
 * Using the [EDAM CSV file](../data/input/EDAM.csv) and supposing you are running the code from within the code folder, run the dictionary creation as
 ```
-python parse_csv.py --input ../data/input/EDAM.csv --output ../data/output/myEDAM.mwt
+python parse_csv.py --input ../data/input/EDAM.csv --output ../data/output/EDAM.mwt
 ```
 
 
