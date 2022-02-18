@@ -10,6 +10,7 @@ def ttl_to_dictionary(ttl_file:str):
 
     Returns:
         ttl_dic (dict): Dictionary with IDs as keys and labels, synonyms as values.
+        ttl_dic = {"id": ["label", "synonym1", "synonym2", ...]}
     """
     ttl_dic = {}
     g = Graph()
