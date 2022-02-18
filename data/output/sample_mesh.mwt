@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<mwt xmlns:z="https://github.com/zbmed-semtec/whatizit-dictionary-ner/">
+<template><z:MESH id='%1' cui='%2' semantics='%3'>%0</z:MESH></template>
+
+<t p1="http://purl.bioontology.org/ontology/MESH/C000659400" p2="C4202352" p3="http://purl.bioontology.org/ontology/STY/T004">Acaulospora ignota</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C000624633" p2="C0305030" p3="http://purl.bioontology.org/ontology/STY/T130, http://purl.bioontology.org/ontology/STY/T197">technetium 99m hydroxyethylene-diphosphonate</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C000624633" p2="C0305030" p3="http://purl.bioontology.org/ontology/STY/T130, http://purl.bioontology.org/ontology/STY/T197">99mTc-HDP</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C000624633" p2="C0305030" p3="http://purl.bioontology.org/ontology/STY/T130, http://purl.bioontology.org/ontology/STY/T197">99mTc-hydroxyethylene-diphosphonate</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C585345" p2="C3714068, C3714069, C3711174" p3="http://purl.bioontology.org/ontology/STY/T123, http://purl.bioontology.org/ontology/STY/T116">Tardbp protein, zebrafish</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C585345" p2="C3714068, C3714069, C3711174" p3="http://purl.bioontology.org/ontology/STY/T123, http://purl.bioontology.org/ontology/STY/T116">Tardbpl-FL protein, zebrafish</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C585345" p2="C3714068, C3714069, C3711174" p3="http://purl.bioontology.org/ontology/STY/T123, http://purl.bioontology.org/ontology/STY/T116">Tardbpl protein, zebrafish</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C585345" p2="C3714068, C3714069, C3711174" p3="http://purl.bioontology.org/ontology/STY/T123, http://purl.bioontology.org/ontology/STY/T116">TDP-43 protein, zebrafish</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C000623720" p2="C1629281" p3="http://purl.bioontology.org/ontology/STY/T005">Autographa californica multiple nuclear polyhedrosis virus</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C000623720" p2="C1629281" p3="http://purl.bioontology.org/ontology/STY/T005">Trichoplusia ni multiple nucleopolyhedrovirus</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C000623720" p2="C1629281" p3="http://purl.bioontology.org/ontology/STY/T005">Galleria mellonealla multiple nucleopolyhedrovirus</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C000623720" p2="C1629281" p3="http://purl.bioontology.org/ontology/STY/T005">Autographa californica multiple nucleopolyhedrovirus</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C000623720" p2="C1629281" p3="http://purl.bioontology.org/ontology/STY/T005">Rachiplusia ou multiple nucleopolyhedrovirus</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C000644313" p2="C1623861" p3="http://purl.bioontology.org/ontology/STY/T007">Leeuwenhoekiella blandensis</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C049340" p2="C0067922" p3="http://purl.bioontology.org/ontology/STY/T109">N-demethylmenogaril</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C000684122" p2="C3424521" p3="http://purl.bioontology.org/ontology/STY/T004">Polypaecilum pisci</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C000684122" p2="C3424521" p3="http://purl.bioontology.org/ontology/STY/T004">Aspergillus pisci</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C044719" p2="C0065909" p3="http://purl.bioontology.org/ontology/STY/T109, http://purl.bioontology.org/ontology/STY/T121">melarsen oxide</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C044719" p2="C0065909" p3="http://purl.bioontology.org/ontology/STY/T109, http://purl.bioontology.org/ontology/STY/T121">p-(4,6-diamino-1,3,5-triazin-2-yl)aminophenylarsonous acid</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C044719" p2="C0065909" p3="http://purl.bioontology.org/ontology/STY/T109, http://purl.bioontology.org/ontology/STY/T121">melarsenoxide</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C558613" p2="C3181636" p3="http://purl.bioontology.org/ontology/STY/T109">seragakinone A</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C000607169" p2="C4277108" p3="http://purl.bioontology.org/ontology/STY/T123, http://purl.bioontology.org/ontology/STY/T109">5-(3,4-dihydroxyphenyl)-1-piperidin-1-yl-penta-2,4-dien-1-one</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C000607169" p2="C4277108" p3="http://purl.bioontology.org/ontology/STY/T123, http://purl.bioontology.org/ontology/STY/T109">GBOT compound</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C524612" p2="C2001647, C2001648" p3="http://purl.bioontology.org/ontology/STY/T109">3,24,26-triacetoxylanosta-7,9(11)-dien-25-ol</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C524612" p2="C2001647, C2001648" p3="http://purl.bioontology.org/ontology/STY/T109">ganoderiol A triacetate</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C054646" p2="C0092237, C0073471" p3="http://purl.bioontology.org/ontology/STY/T109, http://purl.bioontology.org/ontology/STY/T121">Ro 15-0216</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C054646" p2="C0092237, C0073471" p3="http://purl.bioontology.org/ontology/STY/T109, http://purl.bioontology.org/ontology/STY/T121">Acetamide, 2-(dimethylamino)-N-(4-((1-methyl-2-nitro-1H-imidazol-5-yl)methoxy)phenyl)-</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C054646" p2="C0092237, C0073471" p3="http://purl.bioontology.org/ontology/STY/T109, http://purl.bioontology.org/ontology/STY/T121">Ro-15-0216</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C054646" p2="C0092237, C0073471" p3="http://purl.bioontology.org/ontology/STY/T109, http://purl.bioontology.org/ontology/STY/T121">2-(dimethylamino)-4'-((1-methyl-2-nitroimidazole-5-yl)methoxy)acetanilide</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C020645" p2="C0061447, C0131749" p3="http://purl.bioontology.org/ontology/STY/T126, http://purl.bioontology.org/ontology/STY/T116">glucuronolactone reductase</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C020645" p2="C0061447, C0131749" p3="http://purl.bioontology.org/ontology/STY/T126, http://purl.bioontology.org/ontology/STY/T116">NADP L-hexanoate dehydrogenase</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C512891" p2="C1742444" p3="http://purl.bioontology.org/ontology/STY/T116">HflK protein, E coli</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C088631" p2="C0257631" p3="http://purl.bioontology.org/ontology/STY/T116">leucokinin 3</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C538963" p2="C1506396" p3="http://purl.bioontology.org/ontology/STY/T123, http://purl.bioontology.org/ontology/STY/T116">CRY1 protein, human</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C538963" p2="C1506396" p3="http://purl.bioontology.org/ontology/STY/T123, http://purl.bioontology.org/ontology/STY/T116">PHLL1 protein, human</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C538963" p2="C1506396" p3="http://purl.bioontology.org/ontology/STY/T123, http://purl.bioontology.org/ontology/STY/T116">cryptochrome 1 (photolyase-like) protein, human</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C537500" p2="C0795996" p3="http://purl.bioontology.org/ontology/STY/T047">Striatonigral degeneration infantile</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C537500" p2="C0795996" p3="http://purl.bioontology.org/ontology/STY/T047">Striatonigral Degeneration, Infantile</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C537500" p2="C0795996" p3="http://purl.bioontology.org/ontology/STY/T047">Striatal degeneration familial</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C537500" p2="C0795996" p3="http://purl.bioontology.org/ontology/STY/T047">Bilateral Striatal Necrosis, Infantile</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C537500" p2="C0795996" p3="http://purl.bioontology.org/ontology/STY/T047">Striatal Degeneration, Familial</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C537500" p2="C0795996" p3="http://purl.bioontology.org/ontology/STY/T047">Infantile bilateral striatal necrosis</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C094250" p2="C0298935" p3="http://purl.bioontology.org/ontology/STY/T109">3,16,17-trihydroxyestra-1,3,5(10)-trien-15-yl-2'-acetamido-2'-deoxyglucopyranoside</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C094250" p2="C0298935" p3="http://purl.bioontology.org/ontology/STY/T109">TET-15-NAG</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C563697" p2="C1835980" p3="http://purl.bioontology.org/ontology/STY/T047">Parietal Foramina 3</t>
+<t p1="http://purl.bioontology.org/ontology/MESH/C000649205" p2="C3784213" p3="http://purl.bioontology.org/ontology/STY/T007">Exiguobacterium alkaliphilum</t>
+
+</mwt>
