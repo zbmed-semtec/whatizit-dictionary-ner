@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<mwt xmlns:z="http://purl.bioontology.org/ontology/MESH/">
-<template><z:MESH id='%1'>%0</z:MESH></template>
+<mwt xmlns:="http://purl.bioontology.org/ontology/MESH/">
+<template><https://github.com/zbmed-semtec/whatizit-dictionary-ner:AI-RHEUM id='%1'>%0</https://github.com/zbmed-semtec/whatizit-dictionary-ner:AI-RHEUM></template>
 
 <t p1="http://purl.bioontology.org/ontology/AIR/LBPN">Drug Delivery Device</t>
 <t p1="http://purl.bioontology.org/ontology/AIR/LBPN">calcium pyrophosphate deposition disease</t>

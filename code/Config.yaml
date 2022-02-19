@@ -7,6 +7,9 @@ input_file_path: ../data/input/AI-RHEUM.ttl
 # More info: (https://rdflib.readthedocs.io/en/stable/intro_to_parsing.html#saving-rdf)
 file_type: ttl
 
+# Name of the vocabulary dataset
+vocab_name: AI-RHEUM
+
 # path to save the dictionay file
 output_file_path: ../data/output/AI-RHEUM.mwt
 

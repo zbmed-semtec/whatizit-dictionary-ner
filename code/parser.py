@@ -3,10 +3,8 @@ from rdflib.namespace import SKOS
 import yaml
 
 
-class Parser:
-    
+class Parameters:
     def __init__(self,config_file):
-        
         with open(config_file) as file:
             try:
                 config = yaml.safe_load(file)
@@ -16,7 +14,16 @@ class Parser:
         self.input_file = config['input_file_path']
         self.output_file = config['output_file_path']
         self.file_type = config['file_type']
+        self.vocab_name = config['vocab_name']
+        self.z = "https://github.com/zbmed-semtec/whatizit-dictionary-ner" # package name
+
+class Parser(Parameters):
+    
+    def __init__(self,config_file):
+        super().__init__(config_file)
+        
         self.dictionary = self.create_dictionary()
+        self.create_mwt_file()
         
     def get_dictionary(self):
         """Returns the dictionary with IDs as keys and labels, synonyms as values.
@@ -28,7 +35,7 @@ class Parser:
         
 
     def create_dictionary(self):
-        """ Converts a TTL file into a dictionary with IDs as keys and
+        """  file into a dictionary with IDs as keys and
         labels, synonyms as values.
 
         Args:
@@ -61,8 +68,8 @@ class Parser:
         
         with open(self.output_file, 'w') as output:
             output.write("<?xml version='1.0' encoding='UTF-8'?>\n")
-            output.write('<mwt xmlns:z="http://purl.bioontology.org/ontology/MESH/">\n')
-            output.write("<template><z:MESH id='%1'>%0</z:MESH></template>\n\n")
+            output.write('<mwt xmlns:="http://purl.bioontology.org/ontology/MESH/">\n')
+            output.write("<template><{}:{} id='%1'>%0</{}:{}></template>\n\n".format(self.z,self.vocab_name,self.z, self.vocab_name))
             
             for id, metadata in self.dictionary.items():
                 output.write('<t p1="{}">{}</t>\n'.format(id, metadata[0]))
