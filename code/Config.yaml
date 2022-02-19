@@ -1,0 +1,4 @@
+
+input_file_path: ../data/input/AI-RHEUM.ttl
+output_file_path: ../data/output/AI-RHEUM.mwt
+file_type: ttl
