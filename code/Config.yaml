@@ -1,4 +1,12 @@
 
+# path to the file to be parsed
 input_file_path: ../data/input/AI-RHEUM.ttl
-output_file_path: ../data/output/AI-RHEUM.mwt
+
+# format of the file to be parsed. 
+# RDFLIb package is used for parsing. Current supported file types are: 
+# More info: (https://rdflib.readthedocs.io/en/stable/intro_to_parsing.html#saving-rdf)
 file_type: ttl
+
+# path to save the dictionay file
+output_file_path: ../data/output/AI-RHEUM.mwt
+
