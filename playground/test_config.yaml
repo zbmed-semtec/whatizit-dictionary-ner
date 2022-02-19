@@ -1,0 +1,11 @@
+
+--- # Application configuration - config.yaml
+author: admin
+database:
+        driver: dbni
+        port: 3306
+        dbname: mydb
+        username: root
+        password: pass
+
+        
