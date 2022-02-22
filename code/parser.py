@@ -1,20 +1,21 @@
-from rdflib import Graph
-from rdflib.namespace import SKOS
+from rdflib import Graph, RDF
+from rdflib.namespace import SKOS, RDFS, OWL
 import yaml
 
-
 class Parameters:
+    
     def __init__(self,config_file):
+        
         with open(config_file) as file:
             try:
-                config = yaml.safe_load(file)
+                self.config = yaml.safe_load(file)
             except yaml.YAMLError as exc:
                 print(exc)
                 
-        self.input_file = config['input_file_path']
-        self.output_file = config['output_file_path']
-        self.file_type = config['file_type']
-        self.vocab_name = config['vocab_name']
+        self.input_file = self.config['input_file_path']
+        self.output_file = self.config['output_file_path']
+        self.file_type = self.config['file_type']
+        self.vocab_name = self.config['vocab_name']
         self.z = "https://github.com/zbmed-semtec/whatizit-dictionary-ner" # package name
 
 class Parser(Parameters):
@@ -38,57 +39,59 @@ class Parser(Parameters):
         """  file into a dictionary with IDs as keys and
         labels, synonyms as values.
 
-        Args:
-            ttl_file (String): Path to the TTL file.
-
         Returns:
-            ttl_dic (dict): Dictionary with IDs as keys and labels, synonyms as values.
-            ttl_dic = {"id": ["label", "synonym1", "synonym2", ...]}
+            dic (dict): Dictionary with IDs as keys and labels, synonyms as values.
+
         """
-        ttl_dic = {}
+        dic = {}
         g = Graph()
         g.parse(self.input_file, format=self.file_type)
         
-        for id in g.subject_objects(SKOS.notation):
-            for label in g.subject_objects(SKOS.prefLabel):
-                ttl_dic[id[0]] = [str(label[1])]
-            for synonym in g.subject_objects(SKOS.altLabel):
-                ttl_dic[id[0]].append(str(synonym[1]))
+        for owlClass in g.subjects(RDF.type, OWL.Class):
+            for notation in  g.objects(owlClass, SKOS.notation):
+                dic[str(owlClass)] = {}
+            for label in g.objects(owlClass, SKOS.prefLabel):
+                dic[str(owlClass)]["label"] = str(label)
+            dic[str(owlClass)]["synonyms"] = []
+            dic[str(owlClass)]["semantic_types"] = []
+            for synonyms in g.objects(owlClass, SKOS.altLabel):
+                dic[str(owlClass)]["synonyms"].append(str(synonyms))
+            for semantic_types in g.objects(owlClass, RDFS.subClassOf):
+                dic[str(owlClass)]["semantic_types"].append(str(semantic_types))
         
-        return ttl_dic
+        return  dic
 
     def create_mwt_file(self):
         """creates a MWT file from a dictionary with IDs as keys and labels, synonyms as values.
         saves the file to the output_file destination.
-
-        Args:
-            dict (dict): Dictionary with IDs as keys and labels, synonyms as values.
-            output_file (str): Path to the output file.
         """
         
         with open(self.output_file, 'w') as output:
             output.write("<?xml version='1.0' encoding='UTF-8'?>\n")
-            output.write('<mwt xmlns:="http://purl.bioontology.org/ontology/MESH/">\n')
-            output.write("<template><{}:{} id='%1'>%0</{}:{}></template>\n\n".format(self.z,self.vocab_name,self.z, self.vocab_name))
+            output.write('<mwt xmlns:="{}">\n'.format(self.z))
+            output.write("<template><z:{} id='%1' semantics='%2'>%0</z:{}></template>\n\n".format(self.vocab_name, self.vocab_name))
             
             for id, metadata in self.dictionary.items():
-                output.write('<t p1="{}">{}</t>\n'.format(id, metadata[0]))
-                if len(metadata) > 1:
-                    n = 1
-                    while n < len(metadata):
-                        synonym = metadata[n]
-                        output.write('<t p1="{}">{}</t>\n'.format(id, synonym))
-                        n = n + 1
-            output.write("\n</mwt>")
+                line = "<t p1='{}'".format(id)
+                if metadata["semantic_types"] != []:
+                    semantic_types=", ".join(map(str,list(metadata["semantic_types"])))
+                    line = line + " p2='{}'".format(semantic_types)
+                if metadata["synonyms"] != []:
+                    synonyms=", ".join(map(str,list(metadata["synonyms"])))
+                    line = line+">{}</t>\n".format(metadata["label"]+" "+synonyms)
+                else:
+                    line = line+">{}</t>\n".format(metadata["label"])
+                output.write(line)
+            output.write("</mwt>")
+        
         return
+                
     
 
 
 if __name__ == "__main__":
     parser = Parser("../code/Config.yaml")
     dictionary = parser.get_dictionary()
-    print(list(dictionary.keys())[0])
-    print(list(dictionary.values())[0])
                 
     
     
