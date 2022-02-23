@@ -22,7 +22,8 @@ class Parser(Parameters):
     
     def __init__(self,config_file):
         super().__init__(config_file)
-        
+        self.g = Graph()
+        self.g.parse(self.input_file, format=self.file_type)
         self.__dictionary = self.create_dictionary()
         
     def get_dictionary(self):
@@ -43,19 +44,16 @@ class Parser(Parameters):
 
         """
         dic = {}
-        g = Graph()
-        g.parse(self.input_file, format=self.file_type)
-        
-        for owlClass in g.subjects(RDF.type, OWL.Class):
-            for notation in  g.objects(owlClass, SKOS.notation):
+        for owlClass in self.g.subjects(RDF.type, OWL.Class):
+            for notation in  self.g.objects(owlClass, SKOS.notation):
                 dic[str(owlClass)] = {}
-            for label in g.objects(owlClass, SKOS.prefLabel):
+            for label in self.g.objects(owlClass, SKOS.prefLabel):
                 dic[str(owlClass)]["label"] = str(label)
             dic[str(owlClass)]["synonyms"] = []
             dic[str(owlClass)]["semantic_types"] = []
-            for synonyms in g.objects(owlClass, SKOS.altLabel):
+            for synonyms in self.g.objects(owlClass, SKOS.altLabel):
                 dic[str(owlClass)]["synonyms"].append(str(synonyms))
-            for semantic_types in g.objects(owlClass, RDFS.subClassOf):
+            for semantic_types in self.g.objects(owlClass, RDFS.subClassOf):
                 dic[str(owlClass)]["semantic_types"].append(str(semantic_types))
         
         return  dic
@@ -72,10 +70,10 @@ class Parser(Parameters):
             
             for id, metadata in self.dictionary.items():
                 line = "<t p1='{}'".format(id)
-                if metadata["semantic_types"] != []:
+                if not metadata["semantic_types"]:
                     semantic_types=", ".join(map(str,list(metadata["semantic_types"])))
                     line = line + " p2='{}'".format(semantic_types)
-                if metadata["synonyms"] != []:
+                if not metadata["synonyms"]:
                     synonyms=", ".join(map(str,list(metadata["synonyms"])))
                     line = line+">{}</t>\n".format(metadata["label"]+" "+synonyms)
                 else:

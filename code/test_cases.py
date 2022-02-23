@@ -1,6 +1,6 @@
-from itertools import count
 import unittest
 import re
+from rdflib import Graph
 from parse_csv import CSVParser
 from parser import Parser
 
@@ -51,6 +51,7 @@ class TestCases(unittest.TestCase):
         self.assertIsNotNone(self.parser.file_type)
         self.assertIsNotNone(self.parser.z)
         self.assertIsNotNone(self.get_dictionary(), "Dictionary is empty")
+        self.assertIsInstance(self.parser.g,Graph)
         
             
             
