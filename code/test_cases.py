@@ -36,6 +36,7 @@ class TestCases(unittest.TestCase):
     def test_count(self):
         # Add test for count
 
+
 if __name__ == '__main__':
     unittest.main()
 
