@@ -1,9 +1,13 @@
+from itertools import count
 import unittest
 import re
 from parse_csv import CSVParser
 from parser import Parser
 
 class TestCases(unittest.TestCase):
+    
+    def __init__(self):
+        pass
 
     def test_namespace(self):
         """Tests for the namespace of the mwt dictionary file."""
@@ -11,9 +15,9 @@ class TestCases(unittest.TestCase):
         CSVParser('../data/input/sample_MESH.csv', '../data/output/test1.mwt', 'MESH')
         with open('../data/output/test1.mwt', 'r') as test_output:
             header = test_output.read().splitlines()[:3]
-            assert header[0] == "<?xml version='1.0' encoding='UTF-8'?>"
-            assert header[1] == '<mwt xmlns:z="https://github.com/zbmed-semtec/whatizit-dictionary-ner/">'
-            assert header[2] == "<template><z:MESH id='%1' cui='%2' semantics='%3'>%0</z:MESH></template>"
+            self.assertEqual(header[0] == "<?xml version='1.0' encoding='UTF-8'?>")
+            self.assertEqual(header[1] == '<mwt xmlns:z="https://github.com/zbmed-semtec/whatizit-dictionary-ner/">')
+            self.assertEqual(header[2] == "<template><z:MESH id='%1' cui='%2' semantics='%3'>%0</z:MESH></template>")
 
     def test_labels(self):
         """Checks if all vocabulary terms are included in both output dictionaries, ttl and csv."""
@@ -31,11 +35,16 @@ class TestCases(unittest.TestCase):
         for line in lines_ttl:
             label = re.search('(?<=>)(.*?)(?=</)', line)
             labels_ttl.add(label.group())
-        assert set(labels_csv) == set(labels_ttl)
+        self.assertEqual(set(labels_csv) == set(labels_ttl))
 
-    def test_count(self):
-        # Add test for count
-
+    def test_countlines(self):
+        """Checks if the number of vocabulary terms is the same in both output dictionaries, ttl and csv."""
+        with open('../data/output/test1.mwt', 'r') as f1, open('../data/output/test2.mwt', 'r') as f2:
+            count1 = len(f1.readlines()[4:-1])
+            count2 = len(f2.readlines()[4:-1])
+        self.assertEqual(count1, count2)
+            
+            
 
 if __name__ == '__main__':
     unittest.main()
