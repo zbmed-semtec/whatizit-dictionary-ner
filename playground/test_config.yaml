@@ -8,4 +8,5 @@ database:
         username: root
         password: pass
 
+file_storage:
         

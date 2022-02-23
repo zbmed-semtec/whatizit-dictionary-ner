@@ -23,8 +23,7 @@ class Parser(Parameters):
     def __init__(self,config_file):
         super().__init__(config_file)
         
-        self.dictionary = self.create_dictionary()
-        self.create_mwt_file()
+        self.__dictionary = self.create_dictionary()
         
     def get_dictionary(self):
         """Returns the dictionary with IDs as keys and labels, synonyms as values.
@@ -32,7 +31,7 @@ class Parser(Parameters):
         Returns:
             dict (dict): Dictionary with IDs as keys and labels, synonyms as values.
         """
-        return self.dictionary
+        return self.__dictionary
         
 
     def create_dictionary(self):
@@ -92,6 +91,7 @@ class Parser(Parameters):
 if __name__ == "__main__":
     parser = Parser("../code/Config.yaml")
     dictionary = parser.get_dictionary()
+    parser.create_mwt_file()
                 
     
     
