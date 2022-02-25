@@ -2,9 +2,10 @@ from rdflib import Graph, RDF
 from rdflib.namespace import SKOS, RDFS, OWL
 import yaml
 
+
 class Parameters:
     
-    def __init__(self,config_file):
+    def __init__(self, config_file):
         
         with open(config_file) as file:
             try:
@@ -17,6 +18,7 @@ class Parameters:
         self.file_type = self.config['file_type']
         self.vocab_name = self.config['vocab_name']
         self.z = "https://github.com/zbmed-semtec/whatizit-dictionary-ner" # package name
+
 
 class Parser(Parameters):
     
@@ -33,7 +35,6 @@ class Parser(Parameters):
             dict (dict): Dictionary with IDs as keys and labels, synonyms as values.
         """
         return self.__dictionary
-        
 
     def create_dictionary(self):
         """  file into a dictionary with IDs as keys and
@@ -45,7 +46,7 @@ class Parser(Parameters):
         """
         dic = {}
         for owlClass in self.g.subjects(RDF.type, OWL.Class):
-            for notation in  self.g.objects(owlClass, SKOS.notation):
+            for notation in self.g.objects(owlClass, SKOS.notation):
                 dic[str(owlClass)] = {}
             for label in self.g.objects(owlClass, SKOS.prefLabel):
                 dic[str(owlClass)]["label"] = str(label)
@@ -71,10 +72,10 @@ class Parser(Parameters):
             for id, metadata in self.dictionary.items():
                 line = "<t p1='{}'".format(id)
                 if not metadata["semantic_types"]:
-                    semantic_types=", ".join(map(str,list(metadata["semantic_types"])))
+                    semantic_types=", ".join(map(str, list(metadata["semantic_types"])))
                     line = line + " p2='{}'".format(semantic_types)
                 if not metadata["synonyms"]:
-                    synonyms=", ".join(map(str,list(metadata["synonyms"])))
+                    synonyms=", ".join(map(str, list(metadata["synonyms"])))
                     line = line+">{}</t>\n".format(metadata["label"]+" "+synonyms)
                 else:
                     line = line+">{}</t>\n".format(metadata["label"])
@@ -83,14 +84,8 @@ class Parser(Parameters):
         
         return
                 
-    
-
 
 if __name__ == "__main__":
     parser = Parser("../code/Config.yaml")
     dictionary = parser.get_dictionary()
     parser.create_mwt_file()
-                
-    
-    
-    
