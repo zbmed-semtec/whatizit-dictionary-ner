@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 import os
+import sys
+import csv
 import argparse
 import pandas as pd
 import logging
 
+csv.field_size_limit(sys.maxsize)
 
 if not os.path.exists("../data/logging"):
     os.makedirs("../data/logging")
@@ -48,30 +51,48 @@ class CSVParser:
                 metadata[data['Class ID'].iloc[i]]['Semantic Types'] = data['Semantic Types'].iloc[i].replace("|", ", ")
         return metadata
 
+    def replace_chars(self, text):
+        """Replaces special characters that invalidate the mwt format with the correct syntax."""
+        text = text.replace("&", "&amp;")
+        text = text.replace('"', "&quot;")
+        text = text.replace("'", "&apos;")
+        text = text.replace("<", "&lt;")
+        text = text.replace(">", "&gt;")
+        return text
+
     def write_mwt(self):
-        """Takes the data from the metadata dictionary and writes it to an output mwt file
-        """
+        """Takes the data from the metadata dictionary and writes it to an output mwt file"""
         with open(self.output_file, 'w') as output:
             output.write("<?xml version='1.0' encoding='UTF-8'?>\n")
-            output.write('<mwt xmlns:z="https://github.com/zbmed-semtec/whatizit-dictionary-ner/">\n')
-            output.write("<template><z:{} id='%1' cui='%2' semantics='%3'>%0</z:{}></template>\n\n".format(self.vocab, self.vocab))
+            output.write('<mwt xmlns:="https://github.com/zbmed-semtec/whatizit-dictionary-ner">\n')
+            n_parameters = len(self.metadata[max(self.metadata, key=lambda v:len(self.metadata[v]))])
+            if n_parameters > 2:
+                output.write("<template><z:{} id='%1' cui='%2' semantics='%3'>%0</z:{}></template>\n\n".format(self.vocab, self.vocab))
+            else:
+                output.write("<template><z:{} id='%1'>%0</z:{}></template>\n\n".format(self.vocab, self.vocab))
 
             for class_id, metadata in self.metadata.items():
                 if "CUI" and "Semantic Types" in metadata:
+                    metadata['Term'] = self.replace_chars(metadata['Term'])
                     output.write('<t p1="{}" p2="{}" p3="{}">{}</t>\n'.format(class_id, metadata['CUI'], metadata['Semantic Types'], metadata['Term']))
                     if "Synonyms" in metadata:
                         n = 0
                         while n < len(metadata['Synonyms']):
                             synonym = metadata['Synonyms'][n]
+                            synonym = self.replace_chars(synonym)
                             output.write('<t p1="{}" p2="{}" p3="{}">{}</t>\n'.format(class_id, metadata['CUI'], metadata['Semantic Types'], synonym))
                             n = n + 1
                 elif "Synonyms" in metadata:
+                    metadata['Term'] = self.replace_chars(metadata['Term'])
+                    output.write('<t p1="{}">{}</t>\n'.format(class_id, metadata['Term']))
                     n = 0
                     while n < len(metadata['Synonyms']):
                         synonym = metadata['Synonyms'][n]
+                        synonym = self.replace_chars(synonym)
                         output.write('<t p1="{}">{}</t>\n'.format(class_id, synonym))
                         n = n + 1
                 else:
+                    metadata['Term'] = self.replace_chars(metadata['Term'])
                     output.write('<t p1="{}">{}</t>\n'.format(class_id, metadata['Term']))
             output.write("\n</mwt>")
         return
