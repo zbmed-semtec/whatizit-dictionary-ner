@@ -38,7 +38,7 @@ class TestCases(unittest.TestCase):
         for line in lines_ttl:
             label = re.search('(?<=>)(.*?)(?=</)', line)
             labels_ttl.add(label.group())
-        self.assertEqual(set(labels_csv), et(labels_ttl))
+        self.assertEqual(set(labels_csv), set(labels_ttl))
 
     def test_countlines(self):
         """Checks if the number of vocabulary terms is the same in both output dictionaries, ttl and csv."""

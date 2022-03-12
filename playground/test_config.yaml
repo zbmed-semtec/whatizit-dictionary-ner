@@ -9,4 +9,6 @@ database:
         password: pass
 
 file_storage:
+            namespace1: [name1,www.123.de]
+            namespace2: [name2,www.456.de]
         

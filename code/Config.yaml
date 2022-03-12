@@ -13,6 +13,9 @@ vocab_name: AI-RHEUM
 # path to save the dictionay file
 output_file_path: ../data/output/AI-RHEUM.mwt
 
-
+# namspace_info:
+#             namespace1: [OWL,http://www.w3.org/2002/07/owl#]
+#             namespace2: [skos,http://www.w3.org/2004/02/skos/core#]
+#             namespace3: [umls,http://bioportal.bioontology.org/ontologies/umls/]
 
 

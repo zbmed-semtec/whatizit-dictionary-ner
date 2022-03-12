@@ -2,6 +2,7 @@ from rdflib import Graph, RDF
 from rdflib.namespace import SKOS, RDFS, OWL
 from rdflib import Namespace
 import yaml
+import time
 
 
 class Parameters:
@@ -76,43 +77,36 @@ class Parser(Parameters):
         """creates a MWT file from a dictionary with IDs as keys and labels, synonyms as values.
         saves the file to the output_file destination.
         """
-        
         with open(self.output_file, 'w') as output:
             output.write("<?xml version='1.0' encoding='UTF-8'?>\n")
             output.write('<mwt xmlns:="{}">\n'.format(self.z))
-            n_parameters = len(self.__dictionary[max(self.__dictionary, key=lambda v: len(self.__dictionary[v]))])
-            if n_parameters > 2:
-                output.write("<template><z:{} id='%1' cui='%2' semantics='%3'>%0</z:{}></template>\n\n".format(self.vocab_name, self.vocab_name))
-            else:
-                output.write("<template><z:{} id='%1'>%0</z:{}></template>\n\n".format(self.vocab_name, self.vocab_name))
-            
+            output.write("<template><z:{} id='%1' cui='%2' semantics='%3'>%0</z:{}></template>\n\n".format(self.vocab_name, self.vocab_name))
             for id, metadata in self.__dictionary.items():
                 line = '<t p1="{}"'.format(id)
-                if 'cui' in metadata:
-                    cui = ", ".join(map(str, list(metadata["cui"])))
-                    line = line + " p2='{}'".format(cui)
-                elif 'semantic types' in metadata:
-                    semantic_types = ", ".join(map(str, list(metadata["semantic_types"])))
-                    line = line + " p3='{}'".format(semantic_types)
+                cui = ", ".join(map(str, list(metadata["cui"])))
+                line = line + ' p2="{}"'.format(cui)
+                semantic_types = ", ".join(map(str, list(metadata["semantic_types"])))
+                line = line + ' p3="{}"'.format(semantic_types)
                 metadata['label'] = self.replace_chars(metadata["label"])
                 line = line + ">{}</t>\n".format(metadata["label"])
+                output.write(line)
                 if 'synonyms' in metadata:
-                    line = '<t p1="{}"'.format(id)
                     n = 0
                     while n < len(metadata['synonyms']):
                         synonym = metadata['synonyms'][n]
                         synonym = self.replace_chars(synonym)
-                        output.write('<t p1="{}">{}</t>\n'.format(id, synonym))
+                        line = '<t p1="{}" p2="{}" p3="{}">{}</t>\n'.format(id,cui,semantic_types,synonym)
+                        output.write(line)
                         n = n + 1
-                    metadata['label'] = self.replace_chars(metadata["label"])
-                    line = line + ">{}</t>\n".format(metadata["label"])
-                output.write(line)
             output.write("</mwt>")
         
-        return
-                
+        return 
 
 if __name__ == "__main__":
+    start = time.time()
     parser = Parser("../code/Config.yaml")
     dictionary = parser.get_dictionary()
     parser.create_mwt_file()
+    stop = time.time()
+    print("Time to create MWT file: {} minutes {} seconds".format(int((stop - start) / 60), int((stop - start) % 60)))
+    
