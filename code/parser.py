@@ -57,7 +57,7 @@ class Parser(Parameters):
             dic[str(owlClass)]["cui"] = []
             for synonyms in self.g.objects(owlClass, SKOS.altLabel):
                 dic[str(owlClass)]["synonyms"].append(str(synonyms))
-            for semantic_types in self.g.objects(owlClass, RDFS.subClassOf):
+            for semantic_types in self.g.objects(owlClass, umls.hasSTY):
                 dic[str(owlClass)]["semantic_types"].append(str(semantic_types))
             for cui in self.g.objects(owlClass, umls.cui):
                 dic[str(owlClass)]["cui"].append(str(cui))
@@ -107,7 +107,7 @@ class Parser(Parameters):
                     metadata['label'] = self.replace_chars(metadata["label"])
                     line = line + ">{}</t>\n".format(metadata["label"])
                 output.write(line)
-            output.write("</mwt>")
+            output.write("\n</mwt>")
         
         return
                 
