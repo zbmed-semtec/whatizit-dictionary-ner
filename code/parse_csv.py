@@ -21,7 +21,6 @@ class CSVParser:
         self.output_file = output_file
         self.vocab = vocab
         self.metadata = self.get_metadata()
-        self.write_mwt()
 
     def get_metadata(self) -> dict:
         """Parses the csv file and returns a dictionary of Class IDs with the corresponding metadata.
@@ -64,7 +63,7 @@ class CSVParser:
         """Takes the data from the metadata dictionary and writes it to an output mwt file"""
         with open(self.output_file, 'w') as output:
             output.write("<?xml version='1.0' encoding='UTF-8'?>\n")
-            output.write('<mwt xmlns:="https://github.com/zbmed-semtec/whatizit-dictionary-ner">\n')
+            output.write('<mwt xmlns:z="https://github.com/zbmed-semtec/whatizit-dictionary-ner">\n')
             n_parameters = len(self.metadata[max(self.metadata, key=lambda v:len(self.metadata[v]))])
             if n_parameters > 2:
                 output.write("<template><z:{} id='%1' cui='%2' semantics='%3'>%0</z:{}></template>\n\n".format(self.vocab, self.vocab))
@@ -104,5 +103,6 @@ if __name__ == "__main__":
     parser.add_argument("--output", type=str, help="Path for output mwt file")
     parser.add_argument("--vocab", type=str, help="Namespace for controlled vocabulary for mwt file")
     args = parser.parse_args()
-    CSVParser(args.input, args.output, args.vocab)
+    csv_parser = CSVParser(args.input, args.output, args.vocab)
+    csv_parser.write_mwt()
 
