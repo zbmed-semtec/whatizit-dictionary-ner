@@ -13,4 +13,4 @@ python parse_csv.py --input ../data/input/EDAM.csv --output ../data/output/EDAM.
 ```
 
 
-You should get the same output as in the [EDAM MWT dictionary](../data/output/EDAM.mwt)
+You should get the same output as in the [EDAM MWT dictionary](../data/output/EDAM_csv.mwt)
