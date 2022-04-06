@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<mwt xmlns:z="http://a.url/z">
+<template><z:sample ids="%1">%0</z:sample></template>
+
+<t p1="SAMPLE_1">cancer</t>
+<t p1="SAMPLE_2">zyx</t>
+<t p1="SAMPLE_3">AGPAT3</t>
+<t p1="SAMPLE_3">1-acyl-sn-glycerol-3-phosphate acyltransferase gamma</t>
+<t p1="SAMPLE_4">+ delta cadinene synthase isozyme C2</t>
+<t p1="SAMPLE_5">cancer</t>
+
+<template>%0</template>
+<r><z:[^>]*>(.*</z)!:[^>]*></r>
+</mwt>

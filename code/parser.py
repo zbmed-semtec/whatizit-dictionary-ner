@@ -57,7 +57,7 @@ class Parser(Parameters):
             dic[str(owlClass)]["cui"] = []
             for synonyms in self.g.objects(owlClass, SKOS.altLabel):
                 dic[str(owlClass)]["synonyms"].append(str(synonyms))
-            for semantic_types in self.g.objects(owlClass, RDFS.subClassOf):
+            for semantic_types in self.g.objects(owlClass, umls.hasSTY):
                 dic[str(owlClass)]["semantic_types"].append(str(semantic_types))
             for cui in self.g.objects(owlClass, umls.cui):
                 dic[str(owlClass)]["cui"].append(str(cui))
@@ -79,7 +79,7 @@ class Parser(Parameters):
         
         with open(self.output_file, 'w') as output:
             output.write("<?xml version='1.0' encoding='UTF-8'?>\n")
-            output.write('<mwt xmlns:="{}">\n'.format(self.z))
+            output.write('<mwt xmlns:z="{}">\n'.format(self.z))
             n_parameters = len(self.__dictionary[max(self.__dictionary, key=lambda v: len(self.__dictionary[v]))])
             if n_parameters > 2:
                 output.write("<template><z:{} id='%1' cui='%2' semantics='%3'>%0</z:{}></template>\n\n".format(self.vocab_name, self.vocab_name))
@@ -107,7 +107,7 @@ class Parser(Parameters):
                     metadata['label'] = self.replace_chars(metadata["label"])
                     line = line + ">{}</t>\n".format(metadata["label"])
                 output.write(line)
-            output.write("</mwt>")
+            output.write("\n</mwt>")
         
         return
                 

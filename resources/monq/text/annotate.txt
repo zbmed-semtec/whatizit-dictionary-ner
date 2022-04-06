@@ -1,0 +1,5 @@
+This is a test text including some protein and disease related stuff.
+For instance protein zyx and AGPAT3 will be recognized. 
+delta cadinene synthase isozyme C2 (missinsg a (+) at the beginning)
+will not be recognized.
+Cancer will also be recognized

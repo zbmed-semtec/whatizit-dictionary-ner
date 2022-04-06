@@ -3,6 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+data/output/mesh.mwt
+data/output/MESH_ttl2mwt.mwt
 # C extensions
 *.so
 

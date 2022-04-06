@@ -1,9 +1,0 @@
-<svr>
-  <synopsis>tags sample words</synopsis>
-  <environment>
-  </environment>
-  <access>public</access>
-  <host>s18034776</host>
-  <port>8017</port>
-  <cmd>DictFilter -Xmx2000m -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=10 :: -t elem -e plain -p ${port} -ie UTF-8 -oe UTF-8 ${MONQ}/automata/mesh_light.mwt</cmd>
-</svr>
