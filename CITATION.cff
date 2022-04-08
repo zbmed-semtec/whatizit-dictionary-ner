@@ -2,7 +2,6 @@ cff-version: 1.2.0
 title: whatizit-dictionary-ner
 abstract: A dictionary-based approach to NER using whatizit for text-mining.
 authors:
-  - name: Rohitha Ravinder, Lukas Geist, Muhammad Talha, Tim Fellerhoff, Vishnu Vardhan Dadi, Dietrich Rebholz-Schuhmann, Leyla Jael Garcia Castro
-date-released:
-license:
+  - name: Rohitha Ravinder, Muhammad Talha, Vishnu Vardhan Dadi, Dietrich Rebholz-Schuhmann, Leyla Jael Castro
+license: GNU General Public License v3.0
 repository-code: "https://github.com/zbmed-semtec/whatizit-dictionary-ner"
