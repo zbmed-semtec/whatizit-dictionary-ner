@@ -1,7 +1,24 @@
+
+   
 cff-version: 1.2.0
-title: whatizit-dictionary-ner
+message: "If you use this software, please cite it as below."
+title: "whatizit-dictionary-ner"
 abstract: A dictionary-based approach to NER using whatizit for text-mining.
 authors:
-  - name: Rohitha Ravinder, Muhammad Talha, Vishnu Vardhan Dadi, Dietrich Rebholz-Schuhmann, Leyla Jael Castro
+- family-names: Ravinder
+  given-names: Rohitha
+- family-names: Talha
+  given-names: Muhammad
+- family-names: Dadi
+  given-names: Vishnu Vardhan
+  orchid: https://orcid.org/0000-0002-3082-7522
+- family-names: Rebholz-Schuhmann
+  given-names: Dietrich
+  orchid: https://orcid.org/0000-0002-1018-0370
+- family-names: Jael Castro
+  given-names: Leyla
+  orcid: https://orcid.org/0000-0003-3986-0510"
+version: 1.0.0
+date-released: 2022-04-09
 license: GNU General Public License v3.0
 repository-code: "https://github.com/zbmed-semtec/whatizit-dictionary-ner"
