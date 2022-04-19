@@ -30,5 +30,5 @@ with open("dummy.xml", "r") as file:
 
 f = open("dummy_output.xml", "w")
 f.write(first_line)
-f.write(soup.body.next.prettify())
+f.write(str(soup.body.next))
 f.close()
