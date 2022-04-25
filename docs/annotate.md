@@ -2,7 +2,7 @@
 
 1. Build a docker image:
 
-``` sudo docker build -t simple_whatizit .``` 
+``` sudo docker build -t simple_whatizit .```
 
 if that does not work, try specifying the Dockerfile
 
@@ -24,15 +24,15 @@ Starting a container with a volume
 
 ``` sudo docker run -v whatizit_volume:/data -d simple_whatizit ```
 
-This will create and mount a volume named 'whatizit_volume' if it does not exist into the ```/data``` directory of the 'simple_whatizit' container 
+This will create and mount a volume named 'whatizit_volume' if it does not exist into the ```/data``` directory of the 'simple_whatizit' container
 
 3. Verify the creation of the volume.
-   
+
 To verify if the volume was created and mounted to the container correctly, run the following command
 
 ``` sudo docker inspect whatizit_volume ```
 
-This should result in: 
+This should result in:
 
 ```
 "Mounts": [
@@ -54,6 +54,7 @@ This should result in:
 First find out the simple_whatizit container ID and then connect it with its bash
 
 ``` sudo docker container ls --all ```
+
 ``` sudo docker exec -it <container_ID> /bin/bash```
 
 
@@ -61,7 +62,7 @@ First find out the simple_whatizit container ID and then connect it with its bas
 
 ``` cd $MONQ ```
 
-6. Run the [Python script](https://github.com/zbmed-semtec/whatizit-dictionary-ner/tree/main/playground/main.py) to annotate the XML files. 
+6. Run the [Python script](https://github.com/zbmed-semtec/whatizit-dictionary-ner/tree/main/playground/main.py) to annotate the XML files.
 
 ``` python3 main.py --dataset trec ```
 
