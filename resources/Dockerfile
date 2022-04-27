@@ -18,8 +18,8 @@ RUN \
   useradd whatizit && echo "whatizit:whatizit" | chpasswd && adduser whatizit sudo
 
 RUN \
-	apt-get install -y nano && \
-	apt-get install -y procps
+  apt-get install -y nano && \
+  apt-get install -y procps
 
 ADD monq /home/whatizit/monq
 
