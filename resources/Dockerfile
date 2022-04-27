@@ -2,6 +2,18 @@ FROM tomcat:8-jre8
 
 RUN \
   apt-get update && \
+  apt-get -y install python3 && \
+  apt-get -y clean && \
+  rm -rf /var/lib/apt/lists/*
+
+RUN \
+  apt-get update && \
+  apt-get install -y python3-pip && \
+  pip3 install requests beautifulsoup4 && \
+  pip3 install lxml
+
+RUN \
+  apt-get update && \
   apt-get install -y sudo && \
   useradd whatizit && echo "whatizit:whatizit" | chpasswd && adduser whatizit sudo
 
@@ -22,6 +34,6 @@ ENV CLASSPATH ${MONQLIB}/monq-1.0.jar:${MONQLIB}/indexing.jar:${MONQLIB}/xstream
   
 ADD script.sh /script/script.sh
 
-RUN chmod 777 /script/script.sh
+RUN chmod 777 /script/script.sh 
 
 CMD ["/bin/bash", "-c", "/script/script.sh"]
