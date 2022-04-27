@@ -62,7 +62,7 @@ First find out the simple_whatizit container ID and then connect it with its bas
 
 ``` cd $MONQ ```
 
-6. Run the [Python script](https://github.com/zbmed-semtec/whatizit-dictionary-ner/tree/main/playground/main.py) to annotate the XML files.
+6. Run the [Python script](https://github.com/zbmed-semtec/whatizit-dictionary-ner/tree/main/resources/monq/main.py) to annotate the XML files.
 
 ``` python3 main.py --dataset trec ```
 
