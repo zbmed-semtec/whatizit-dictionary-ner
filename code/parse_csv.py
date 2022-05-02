@@ -41,13 +41,14 @@ class CSVParser:
             data.drop(data.index[pos], inplace=True)
         metadata = dict()
         for i in range(len(data)):
-            metadata[data['Class ID'].iloc[i]] = {'Term': data['Preferred Label'].iloc[i]}
-            if pd.isnull(data['Synonyms'].iloc[i]) is False:
-                metadata[data['Class ID'].iloc[i]]['Synonyms'] = data['Synonyms'].iloc[i].split("|")
-            if pd.isnull(data['CUI'].iloc[i]) is False:
-                metadata[data['Class ID'].iloc[i]]['CUI'] = data['CUI'].iloc[i].replace("|", ", ")
-            if pd.isnull(data['Semantic Types'].iloc[i]) is False:
-                metadata[data['Class ID'].iloc[i]]['Semantic Types'] = data['Semantic Types'].iloc[i].replace("|", ", ")
+            if data['Class ID'].iloc[i].startswith('http://purl.bioontology.org/ontology/MESH/'):
+                metadata[data['Class ID'].iloc[i]] = {'Term': data['Preferred Label'].iloc[i]}
+                if pd.isnull(data['Synonyms'].iloc[i]) is False:
+                    metadata[data['Class ID'].iloc[i]]['Synonyms'] = data['Synonyms'].iloc[i].split("|")
+                if pd.isnull(data['CUI'].iloc[i]) is False:
+                    metadata[data['Class ID'].iloc[i]]['CUI'] = data['CUI'].iloc[i].replace("|", ", ")
+                if pd.isnull(data['Semantic Types'].iloc[i]) is False:
+                    metadata[data['Class ID'].iloc[i]]['Semantic Types'] = data['Semantic Types'].iloc[i].replace("|", ", ")
         return metadata
 
     def replace_chars(self, text):
