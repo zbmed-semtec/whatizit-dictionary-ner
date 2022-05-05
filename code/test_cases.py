@@ -9,10 +9,10 @@ from parser import Parser
 class TestCases(unittest.TestCase):
     
     def setUp(self):
-        self.parser = Parser("../code/Config.yaml")
-        self.csv_parser = CSVParser('../data/input/sample_MESH.csv', '../data/output/test1.mwt', 'MESH')
-        self.test_file_1 = '../data/output/mesh.mwt'
-        self.test_file_2 = '../data/output/MESH_ttl2mwt.mwt'
+        self.parser = Parser("/home/ubuntu/workspace/whatizit/code/Config.yaml")
+        self.csv_parser = CSVParser('/home/ubuntu/workspace/whatizit/data/input/sample_MESH.csv', '/home/ubuntu/workspace/whatizit/data/output/test1.mwt', 'MESH')
+        self.test_file_1 = '/home/ubuntu/workspace/whatizit/data/output/mesh.mwt'
+        self.test_file_2 = '/home/ubuntu/workspace/whatizit/data/output/MESH.mwt'
 
     def test_namespace(self):
         """Tests for the namespace of the mwt dictionary file."""
@@ -29,6 +29,7 @@ class TestCases(unittest.TestCase):
                 self.assertEqual(closing_tag, '</mwt>')
         testing(self.test_file_1)
         testing(self.test_file_2)
+        print("1")
 
     def test_labels(self):
         """Checks if all vocabulary terms are included in both output dictionaries, ttl and csv."""
@@ -45,14 +46,16 @@ class TestCases(unittest.TestCase):
             label = re.search('(?<=>)(.*?)(?=</)', line)
             labels_ttl.add(label.group())
         self.assertEqual(set(labels_csv), set(labels_ttl))
+        print("2")
 
     def test_countlines(self):
         """Checks if the number of vocabulary terms is the same in both output dictionaries, ttl and csv."""
-        with open('../data/output/mesh.mwt', 'r') as f1, open('../data/output/MESH_ttl2mwt.mwt', 'r') as f2:
+        with open(self.test_file_1, 'r') as f1, open(self.test_file_2, 'r') as f2:
             count1 = len(f1.readlines()[4:-1])
             count2 = len(f2.readlines()[4:-1])
         self.assertEqual(count1, count2)
-        
+        print("3")
+
     def test_parameters(self):
         """Checks if the input file, output file and vocabulary name is empty."""
         self.assertIsNotNone(self.parser.input_file)

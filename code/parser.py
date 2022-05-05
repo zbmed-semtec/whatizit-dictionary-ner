@@ -48,19 +48,21 @@ class Parser(Parameters):
         dic = {}
         umls = Namespace("http://bioportal.bioontology.org/ontologies/umls/")
         for owlClass in self.g.subjects(RDF.type, OWL.Class):
-            for notation in self.g.objects(owlClass, SKOS.notation):
-                dic[str(owlClass)] = {}
-            for label in self.g.objects(owlClass, SKOS.prefLabel):
-                dic[str(owlClass)]["label"] = str(label)
-            dic[str(owlClass)]["synonyms"] = []
-            dic[str(owlClass)]["semantic_types"] = []
-            dic[str(owlClass)]["cui"] = []
-            for synonyms in self.g.objects(owlClass, SKOS.altLabel):
-                dic[str(owlClass)]["synonyms"].append(str(synonyms))
-            for semantic_types in self.g.objects(owlClass, umls.hasSTY):
-                dic[str(owlClass)]["semantic_types"].append(str(semantic_types))
-            for cui in self.g.objects(owlClass, umls.cui):
-                dic[str(owlClass)]["cui"].append(str(cui))
+            if owlClass.startswith("http://purl.bioontology.org/ontology/MESH/"):
+                #print(owlClass)
+                for notation in self.g.objects(owlClass, SKOS.notation):
+                    dic[str(owlClass)] = {}
+                for label in self.g.objects(owlClass, SKOS.prefLabel):
+                    dic[str(owlClass)]["label"] = str(label)
+                dic[str(owlClass)]["synonyms"] = []
+                dic[str(owlClass)]["semantic_types"] = []
+                dic[str(owlClass)]["cui"] = []
+                for synonyms in self.g.objects(owlClass, SKOS.altLabel):
+                    dic[str(owlClass)]["synonyms"].append(str(synonyms))
+                for semantic_types in self.g.objects(owlClass, umls.hasSTY):
+                    dic[str(owlClass)]["semantic_types"].append(str(semantic_types))
+                for cui in self.g.objects(owlClass, umls.cui):
+                    dic[str(owlClass)]["cui"].append(str(cui))
         return dic
 
     def replace_chars(self, text):
@@ -87,32 +89,40 @@ class Parser(Parameters):
                 output.write("<template><z:{} id='%1'>%0</z:{}></template>\n\n".format(self.vocab_name, self.vocab_name))
             
             for id, metadata in self.__dictionary.items():
-                line = '<t p1="{}"'.format(id)
-                if 'cui' in metadata:
-                    cui = ", ".join(map(str, list(metadata["cui"])))
-                    line = line + " p2='{}'".format(cui)
-                elif 'semantic types' in metadata:
-                    semantic_types = ", ".join(map(str, list(metadata["semantic_types"])))
-                    line = line + " p3='{}'".format(semantic_types)
-                metadata['label'] = self.replace_chars(metadata["label"])
-                line = line + ">{}</t>\n".format(metadata["label"])
-                if 'synonyms' in metadata:
-                    line = '<t p1="{}"'.format(id)
+                if 'cui' and 'semantic_types' in metadata:
+                    #print("cui and st")
+                    cui = (", ".join(map(str, metadata["cui"]))).replace("'", "")
+                    print(cui)
+                    semantic_types = ", ".join(map(str, metadata["semantic_types"]))
+                    print(semantic_types)
+                    metadata['label'] = self.replace_chars(metadata["label"])
+                    output.write('<t p1="{}" p2="{}" p3="{}">{}</t>\n'.format(id, cui, semantic_types, metadata['label']))
+                    if 'synonyms' in metadata:
+                        n = 0
+                        while n < len(metadata['synonyms']):
+                            synonym = metadata['synonyms'][n]
+                            synonym = self.replace_chars(synonym)
+                            output.write('<t p1="{}" p2="{}" p3="{}">{}</t>\n'.format(id, cui, semantic_types, synonym))
+                            n = n + 1
+                elif "synonyms" in metadata:
+                    print("only synonyms")
+                    metadata['label'] = self.replace_chars(metadata['label'])
+                    output.write('<t p1="{}">{}</t>\n'.format(id, metadata['label']))
                     n = 0
                     while n < len(metadata['synonyms']):
                         synonym = metadata['synonyms'][n]
                         synonym = self.replace_chars(synonym)
                         output.write('<t p1="{}">{}</t>\n'.format(id, synonym))
                         n = n + 1
-                    metadata['label'] = self.replace_chars(metadata["label"])
-                    line = line + ">{}</t>\n".format(metadata["label"])
-                output.write(line)
+                else:
+                    print("none")
+                    metadata['label'] = self.replace_chars(metadata['label'])
+                    output.write('<t p1="{}">{}</t>\n'.format(id, metadata['label']))
             output.write("\n</mwt>")
-        
         return
                 
 
 if __name__ == "__main__":
-    parser = Parser("../code/Config.yaml")
+    parser = Parser("/home/ubuntu/workspace/whatizit/code/Config.yaml")
     dictionary = parser.get_dictionary()
     parser.create_mwt_file()

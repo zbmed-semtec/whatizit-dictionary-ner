@@ -1,17 +1,17 @@
 
 # path to the file to be parsed
-input_file_path: ../data/input/AI-RHEUM.ttl
+input_file_path: /home/ubuntu/workspace/whatizit/data/input/MESH.ttl
 
 # format of the file to be parsed. 
 # RDFLIb package is used for parsing. Current supported file types are: 
 # More info: (https://rdflib.readthedocs.io/en/stable/intro_to_parsing.html#saving-rdf)
-file_type: ttl
+file_type: turtle
 
 # Name of the vocabulary dataset
-vocab_name: AI-RHEUM
+vocab_name: MESH
 
 # path to save the dictionay file
-output_file_path: ../data/output/AI-RHEUM.mwt
+output_file_path: /home/ubuntu/workspace/whatizit/data/output/MESH.mwt
 
 
 
