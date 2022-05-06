@@ -19,7 +19,7 @@ def format_input(input_path, formatted_input_path):
         filename = file.split('.')[0] + '_sed.' + file.split('.')[1]
         output = os.path.join(formatted_input_path, filename)
         os.system(f"sed 's/&lt;/</g;s/&gt;/>/g;s/&amp;/\&/g' {input} > {output}")
-    os.system("echo Formatted input files")
+    os.system("echo $(date) Formatted input files")
 
 def annotate(formatted_input_path, output_path):
     """Annotates the formatted input XML files with the MESH dictionary using the whatizit tool.
@@ -47,16 +47,18 @@ def format_output(output_path, formatted_output_path):
             # Read each line in the file, readlines() returns a list of lines
             contents = file_data.readlines()
             first_line = contents[0]
+            # Adding namespace
+            contents[1] = contents[1].split(">")[0] + ' xmlns:z="https://github.com/zbmed-semtec/whatizit-dictionary-ner">\n'
             # Combine the lines in the list into a string
             contents = "".join(contents)
             soup = BeautifulSoup(contents, "lxml")
         filename = file.split('_')[0] + '_annotated.xml'
         output = os.path.join(formatted_output_path, filename)
-        f = open(output + filename, "w")
+        f = open(output, "w")
         f.write(first_line)
         f.write(str(soup.body.next))
         f.close()
-    os.system(f"echo Formatted annotated files")   
+    os.system(f"echo $(date) Formatted annotated files")   
 
 
 if __name__ == "__main__":
