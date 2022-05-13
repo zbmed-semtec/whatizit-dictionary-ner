@@ -1,4 +1,3 @@
-from contextlib import closing
 import unittest
 import re
 from rdflib import Graph
