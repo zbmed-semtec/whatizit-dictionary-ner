@@ -64,10 +64,10 @@ class CSVParser:
         """Takes the data from the metadata dictionary and writes it to an output mwt file"""
         with open(self.output_file, 'w') as output:
             output.write("<?xml version='1.0' encoding='UTF-8'?>\n")
-            output.write('<mwt xmlns:z="https://github.com/zbmed-semtec/whatizit-dictionary-ner">\n')
+            output.write('<mwt xmlns:z="https://github.com/zbmed-semtec/whatizit-dictionary-ner#">\n')
             n_parameters = len(self.metadata[max(self.metadata, key=lambda v:len(self.metadata[v]))])
             if n_parameters > 2:
-                output.write("<template><z:{} id='%1' cui='%2' semantics='%3'>%0</z:{}></template>\n\n".format(self.vocab, self.vocab))
+                output.write("<template><z:{} id='%1' cui='%2' sty='%3'>%0</z:{}></template>\n\n".format(self.vocab, self.vocab))
             else:
                 output.write("<template><z:{} id='%1'>%0</z:{}></template>\n\n".format(self.vocab, self.vocab))
 

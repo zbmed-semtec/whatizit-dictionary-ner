@@ -18,7 +18,7 @@ class Parameters:
         self.output_file = self.config['output_file_path']
         self.file_type = self.config['file_type']
         self.vocab_name = self.config['vocab_name']
-        self.z = "https://github.com/zbmed-semtec/whatizit-dictionary-ner"  # package name
+        self.namespace = "https://github.com/zbmed-semtec/whatizit-dictionary-ner#"
 
 
 class Parser(Parameters):
@@ -81,10 +81,10 @@ class Parser(Parameters):
         
         with open(self.output_file, 'w') as output:
             output.write("<?xml version='1.0' encoding='UTF-8'?>\n")
-            output.write('<mwt xmlns:z="{}">\n'.format(self.z))
+            output.write('<mwt xmlns:z="{}">\n'.format(self.namespace))
             n_parameters = len(self.__dictionary[max(self.__dictionary, key=lambda v: len(self.__dictionary[v]))])
             if n_parameters > 2:
-                output.write("<template><z:{} id='%1' cui='%2' semantics='%3'>%0</z:{}></template>\n\n".format(self.vocab_name, self.vocab_name))
+                output.write("<template><z:{} id='%1' cui='%2' sty='%3'>%0</z:{}></template>\n\n".format(self.vocab_name, self.vocab_name))
             else:
                 output.write("<template><z:{} id='%1'>%0</z:{}></template>\n\n".format(self.vocab_name, self.vocab_name))
             
