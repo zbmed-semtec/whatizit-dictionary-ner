@@ -64,9 +64,13 @@ First find out the simple_whatizit container ID and then connect it with its bas
 
 6. Run the [Python script](https://github.com/zbmed-semtec/whatizit-dictionary-ner/tree/main/resources/monq/main.py) to annotate the XML files.
 
-``` python3 main.py --dataset trec ```
+``` python3 main.py --dataset trec --n 10000```
 
-This command takes in the dataset parameter. Select the desired dataset to be annotated (TREC/RELISH)
+This command takes two parameters:
+
+dataset : Name of the dataset to be annotated. (TREC/RELISH)
+
+n : Number of files to annotate from the dataset.
 
 7. Output
 
