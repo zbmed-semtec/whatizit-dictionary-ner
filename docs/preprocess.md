@@ -27,7 +27,7 @@ Escape the less than characters that are followed by an alphabet or a period to 
 The following exceptions are handled at this stage:
 ```
 P<.001 --> P&lt;.001
-P<or =0.004 --> P&lt;or = 0.004
+P<or =0.004 --> P&lt;or =0.004
 ```
 
 
