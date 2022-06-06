@@ -21,8 +21,18 @@ Our pipeline makes use of the ```sed``` linux command to replace the encoded ver
 Annotate the formatted input XML files with the dictionary of your choice using the whatizit tool. This will also result in an invalid annotated XML file where the special characters are in their original form ```> , < , &```.
 
 ``` cat {formatted_input_filename} | DistFilter svr=xmlElem > {annotated_filename} ```
-   
-#### 3. Format output annotated file
+
+#### 3. Escape less than '<' character
+Escape the less than characters that are followed by an alphabet or a period to its encoded form. We make use of Regular Expressions to handle this case since the XML Parsers do not handle this escaping.
+The following exceptions are handled at this stage:
+```
+P<.001 --> P&lt;.001
+P<or =0.004 --> P&lt;or = 0.004
+```
+
+
+
+#### 4. Format output annotated file
 Modify the annotated XML output into its valid XML format. This will result in a valid XML and escape the special characters as follows:
 
     < --> &lt;  

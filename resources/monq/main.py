@@ -1,35 +1,51 @@
 import os
+import re
 import argparse
 from bs4 import BeautifulSoup
 import warnings
 import logging
 
 
-logging.basicConfig(filename='../monq/logging/annotation.log', filemode='w', level=logging.DEBUG, format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+logging.basicConfig(filename='../monq/logging/annotation.log', filemode='w',
+                    level=logging.DEBUG, format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
-def format_input(input_path, formatted_input_path):
+
+def format_input(input_path, formatted_input_path) -> None:
     """Formats the input XML files by unescaping the escaped special characters.
     Replaces the HTML encoding of the special characters to its original form.
     The conversion is as follows:
     &lt; --> <
     &gt: --> >
     &amp; --> &
-    Input:  input_path -> str: Filepath of the input XML file.
-            formatted_input_path -> str: Filepath for the formatted XML file.
+    
+    Parameters
+    ----------
+    input_path : str
+        Filepath of the input XML file.
+    formatted_input_path : str
+        Filepath for the formatted XML file.
     """
     logging.info("Starting annotation of {} XML files".format(dataset.upper()))
     for file in os.listdir(input_path):
         if not file.endswith(".DS_Store"):
-            input= os.path.join(input_path, file)
+            input = os.path.join(input_path, file)
             filename = file.split('.')[0] + '_sed.' + file.split('.')[1]
             output = os.path.join(formatted_input_path, filename)
             os.system(f"sed 's/&lt;/</g;s/&gt;/>/g;s/&amp;/\&/g' {input} > {output}")
     logging.info("Formatted input files")
 
-def annotate(formatted_input_path, output_path, n_files):
+
+def annotate(formatted_input_path, output_path, n_files) -> None:
     """Annotates the formatted input XML files with the MESH dictionary using the whatizit tool.
-    Input: formatted_input_path -> str: Filepath of the formatted XML file.
-           output_path-> str: Filepath for the annotated XML file.
+    
+    Parameters
+    ----------
+    formatted_input_path : str
+        Filepath of the formatted XML file.
+    output_path : str
+        Filepath for the annotated XML file.
+    n_files : int
+        Number of files to annotate.
     """
     files = [file for file in sorted(os.listdir(formatted_input_path)) if not file.endswith('.DS_Store')][:n_files]
     batches = [files[i:i+1000] for i in range(0, len(files), 1000)]
@@ -45,10 +61,39 @@ def annotate(formatted_input_path, output_path, n_files):
         logging.info("Annotatted files of batch {}. Start : {} End: {} ".format(counter, start, end))
         counter += 1
 
-def format_output(output_path, formatted_output_path, n_files):
+
+def escape_character(contents) -> str:
+    """
+    Converts the '<' character to its encoded form.
+    Replaces the '<' character if it is followed by alphabets or a period other than those 
+    in the annotation tags to &lt;.
+    
+    Parameters
+    ----------
+    contents : str
+        Body of the annotated XML file.
+    Returns
+    ----------
+    contents : str
+        Formatted body of the annotated XML file.
+    """
+    texts = re.findall(r'<text>(.*?)</text>', contents, re.DOTALL)
+    title = texts[0]
+    abstract = texts[1]
+    contents = contents.replace(title, re.sub(r"<(?!(/*)z:MESH)", "&lt;", title))
+    contents = contents.replace(abstract, re.sub(r"<(?!(/*)z:MESH)", "&lt;", abstract))
+    return contents
+
+
+def format_output(output_path, formatted_output_path) -> None:
     """Formats the annotated XML output into its valid XML format.
-    Input: output_path -> str: Filepath of the annotated XML file.
-           formatted_output_path -> str: Filepath for the nanformatted annotated XML file.
+    
+    Parameters
+    ----------
+    output_path : str
+        Filepath of the annotated XML file.
+    formatted_output_path : str
+        Filepath for the nanformatted annotated XML file.
     """
     for file in os.listdir(output_path):
         temp_output = os.path.join(output_path, file)
@@ -60,7 +105,8 @@ def format_output(output_path, formatted_output_path, n_files):
             contents[1] = contents[1].split(">")[0] + ' xmlns:z="https://github.com/zbmed-semtec/whatizit-dictionary-ner#">\n'
             # Combine the lines in the list into a string
             contents = "".join(contents)
-            soup = BeautifulSoup(contents, "lxml")
+            formatted_contents = escape_character(contents)
+            soup = BeautifulSoup(formatted_contents, "lxml")
         filename = file.split('_')[0] + '_annotated.xml'
         output = os.path.join(formatted_output_path, filename)
         f = open(output, "w")
@@ -90,4 +136,4 @@ if __name__ == "__main__":
         os.makedirs(formatted_output_path)
     format_input(input_path, formatted_input_path)
     annotate(formatted_input_path, output_path, n_files)
-    format_output(output_path, formatted_output_path, n_files)
+    format_output(output_path, formatted_output_path)
