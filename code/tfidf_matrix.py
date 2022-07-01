@@ -14,7 +14,7 @@ from typing import List, Dict, Tuple
 if not os.path.exists("../logging"):
     os.makedirs("../logging")
 
-logging.basicConfig(filename='../logging/tf_idf_matrix.log', filemode='a', level=logging.DEBUG)
+logging.basicConfig(filename='../logging/tfidf_matrix.log', filemode='a', level=logging.DEBUG)
 
 
 def extract_annotated_mesh_id(tag: ET.Element) -> str:
@@ -76,7 +76,7 @@ def whatizit_annotation_extractor(annotations_path: str, namespace: dict) -> Tup
                 else:
                     annotations[pmid][mesh_id]["Freq_term_in_doc"] += 1
 
-    return annotations, pmids
+    return annotations, pmids[:5]
 
 
 def get_mesh_ids(mesh_filepath: str) -> List:
@@ -102,6 +102,30 @@ def get_mesh_ids(mesh_filepath: str) -> List:
     return mesh_ids
 
 
+def get_prevalant_mesh_ids(pmids: list, mesh_ids: list, annotations: dict) -> list:
+    """
+    Extracts only those mesh terms that are present in the given corpus.
+    Parameters
+    ----------
+    pmids : list
+        PMIDS of all XML files.
+    mesh_ids : list
+        All MeSH IDs.
+    annotations : dict
+        Dictionary of PMIDs with its corresponding mesh terms and the frequency.
+    Returns
+    -------
+    relevant_mesh_ids : list
+        List of all MeSH terms that are present in the corpus.
+    """
+    prevalant_mesh_ids = []
+    for pmid in pmids:
+        for mesh_id in mesh_ids:
+            if mesh_id in annotations[pmid] and mesh_id not in prevalant_mesh_ids:
+                prevalant_mesh_ids.append(mesh_id)
+    return prevalant_mesh_ids
+
+
 def create_matrix(matrix_name: str, mesh_ids: list, pmids: list) -> np.memmap:
     """
     Creates an empty numpy memory-map of the required dimensions based on the mesh_ids and pmids.
@@ -110,7 +134,7 @@ def create_matrix(matrix_name: str, mesh_ids: list, pmids: list) -> np.memmap:
     matrix_name : str
         Name of the matrix.
     mesh_ids : list
-        All MeSH IDs.
+        All prevalent MeSH IDs.
     pmids : list
         PMIDS of all XML files.
 
@@ -184,8 +208,8 @@ def fill_tf_matrix(chunk_size: int, tf_empty_matrix: np.memmap, pmids: list, mes
                 continue
 
         tracking_counter += 1
-
-    return tf_matrix
+    tf_empty_matrix.flush()
+    return tf_empty_matrix
 
 
 def get_df(tf_matrix: np.memmap) -> list:
@@ -205,7 +229,7 @@ def get_df(tf_matrix: np.memmap) -> list:
     return dfs
 
 
-def get_tf_idf(pmid: int, mesh_id: int, len_corpus: int) -> float:
+def get_tf_idf(pmid_index: int, mesh_id_index: int, len_corpus: int) -> float:
     """
     Calculates the tf-idf values for the MeSH term in pmid article.
     Parameters
@@ -222,8 +246,8 @@ def get_tf_idf(pmid: int, mesh_id: int, len_corpus: int) -> float:
     tf_idf : float
         tf-idf value.
     """
-    tf_value = tf_matrix[pmid][mesh_id]
-    df_value = dfs[mesh_id]
+    tf_value = tf_matrix[pmid_index][mesh_id_index]
+    df_value = dfs[mesh_id_index]
     idf_value = np.log(len_corpus/df_value)
     tf_idf = tf_value * idf_value
     return tf_idf
@@ -262,30 +286,46 @@ def fill_tf_idf_matrix(chunk_size: int, tf_idf_empty_matrix: np.memmap, pmids: l
 
             tracking_counter = 0
 
-        for mesh_id_index, mesh_id in enumerate(mesh_ids):
-            tf_idf_empty_matrix[pmid][mesh_id] = get_tf_idf(pmid, mesh_id, len_corpus)
-    return tf_idf_matrix
+        for mesh_id_index, prevalent_mesh_id_index in enumerate(mesh_ids):
+            tf_idf_empty_matrix[pmid_index][mesh_id_index] = get_tf_idf(pmid_index, mesh_id_index, len_corpus)
+    tf_idf_empty_matrix.flush()
+    return tf_idf_empty_matrix
 
 
-# def load_numpy_matrix(pmids: list, mesh_ids: list, matrix_file: np.memmap) -> np.memmap:
-#     similarity_matrix = np.memmap(matrix_file, dtype='float32', mode='r+', shape=(len(pmids), len(mesh_ids)))
-#     return similarity_matrix
+def load_numpy_matrix(pmids: list, mesh_ids: list, matrix_file: str) -> np.memmap:
+    """
+    Loads the numpy memory map matrix.
+    Parameters
+    ----------
+    pmids : list
+        List of all PMIDs.
+    mesh_ids : list
+        List of all prevalent mesh ids.
+    matrix_file : str
+        Name of the matrix file.
+    Returns
+    -------
+    matrix : np.memmap
+        Loaded memory map matrix.
+    """
+    matrix = np.memmap(matrix_file, dtype='float32', mode='r+', shape=(len(pmids), len(mesh_ids)))
+    return matrix
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--annotations_path", type=str, help="Path for annotated XML files")
     parser.add_argument("--mesh_file", type=str, help="Path for MESH CSV file")
-    parser.add_argument("--corpus", type=str, help="Name of the corpus")
-    parser.add_argument("--chunk_size", type=int, help="Chunk size per iteration")
-    parser.add_argument("--matrix_name", type=str, help="Name of the tf-idf matrix")
     args = parser.parse_args()
 
     namespace = {"z": "https://github.com/zbmed-semtec/whatizit-dictionary-ner#"}
     annotations, pmids = whatizit_annotation_extractor(args.annotations_path, namespace)
     mesh_ids = get_mesh_ids(args.mesh_file)
-    tf_empty_matrix = create_matrix("tf_matrix", mesh_ids, pmids)
-    tf_matrix = fill_tf_matrix(args.chunk_size, tf_empty_matrix, annotations)
-    tf_idf_empty_matrix = create_matrix(args.matrix_name, mesh_ids, pmids)
+    prevalant_mesh_ids = get_prevalant_mesh_ids(pmids, mesh_ids, annotations)
+    tf_empty_matrix = create_matrix("tf_matrix", prevalant_mesh_ids, pmids)
+    fill_tf_matrix(5000, tf_empty_matrix, pmids, prevalant_mesh_ids, annotations)
+    tf_matrix = load_numpy_matrix(pmids, prevalant_mesh_ids, "tf_matrix")
     dfs = get_df(tf_matrix)
-    tf_idf_matrix = fill_tf_idf_matrix(tf_idf_empty_matrix, len(pmids))
+    tf_idf_empty_matrix = create_matrix("tf_idf_matrix", prevalant_mesh_ids, pmids)
+    fill_tf_idf_matrix(5000, tf_idf_empty_matrix, pmids, prevalant_mesh_ids, len(pmids))
+    tf_idf_matrix = load_numpy_matrix(pmids, prevalant_mesh_ids, "tf_idf_matrix")
