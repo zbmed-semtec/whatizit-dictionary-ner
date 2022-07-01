@@ -1,7 +1,5 @@
 # Creation of TF-IDF matrices
 
-------
-
 In order to evaluate how relevant a word ([MeSH](https://www.nlm.nih.gov/mesh/meshhome.html) term) is to a document (annotated XML file) in a collection of documents (TREC and RELISH corpus), we make use of the statistical measure of TF-IDF (term frequency-inverse document frequency).
 
 The creation of TF-IDF matrices for Whatizit annotated XML files takes as data input all the annotated XML files and a Bioportal-like CSV corresponding to a controlled vocabulary (MeSH in our case).
@@ -15,7 +13,7 @@ The TF matrix accounts for how many times a MeSH term appears in each of the ann
 
 We define the Term frequency as:
 
-``` math
+```
 tf(t,d) = n / total annotated terms in the document
 ```
 
