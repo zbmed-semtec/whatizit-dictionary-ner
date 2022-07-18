@@ -8,13 +8,14 @@ import pandas as pd
 import numpy as np
 import logging
 import xml.etree.ElementTree as ET
+from scipy import spatial
 from typing import List, Dict, Tuple
 
 
 if not os.path.exists("../logging"):
     os.makedirs("../logging")
 
-logging.basicConfig(filename='../logging/tfidf_matrix.log', filemode='a', level=logging.DEBUG)
+logging.basicConfig(filename='../logging/relish_tfidf_matrix.log', filemode='a', level=logging.DEBUG)
 
 
 def extract_annotated_mesh_id(tag: ET.Element) -> str:
@@ -76,7 +77,7 @@ def whatizit_annotation_extractor(annotations_path: str, namespace: dict) -> Tup
                 else:
                     annotations[pmid][mesh_id]["Freq_term_in_doc"] += 1
 
-    return annotations, pmids[:5]
+    return annotations, pmids
 
 
 def get_mesh_ids(mesh_filepath: str) -> List:
@@ -288,7 +289,9 @@ def fill_tf_idf_matrix(chunk_size: int, tf_idf_empty_matrix: np.memmap, pmids: l
 
         for mesh_id_index, prevalent_mesh_id_index in enumerate(mesh_ids):
             tf_idf_empty_matrix[pmid_index][mesh_id_index] = get_tf_idf(pmid_index, mesh_id_index, len_corpus)
-    tf_idf_empty_matrix.flush()
+
+        tracking_counter += 1
+
     return tf_idf_empty_matrix
 
 
@@ -308,8 +311,33 @@ def load_numpy_matrix(pmids: list, mesh_ids: list, matrix_file: str) -> np.memma
     matrix : np.memmap
         Loaded memory map matrix.
     """
-    matrix = np.memmap(matrix_file, dtype='float32', mode='r+', shape=(len(pmids), len(mesh_ids)))
+    matrix = np.memmap(matrix_file, dtype='float', mode='r', shape=(len(pmids), len(mesh_ids)))
     return matrix
+
+
+def get_cosine_similarity(input_file, pmids, tfidf_matrix):
+    matrix_df = pd.read_csv(input_file)
+
+    # Adds the empty 4th column to the file
+    matrix_df["Cosine Similarity"] = ""
+
+    for index, row in matrix_df.iterrows():
+        ref_pmid = str(row["PMID Reference"])
+        assessed_pmid = str(row["PMID Assessed"])
+        try:
+            # Determine the cosine similarity of the ref and assessed pmids and add to the 4th column
+            ref_pmid_index = pmids.index(ref_pmid)
+            assessed_pmid_index = pmids.index(assessed_pmid)
+            row["Cosine Similarity"] = round((1 - spatial.distance.cosine(tfidf_matrix[ref_pmid_index], tfidf_matrix[assessed_pmid_index])), 2)
+
+        except:
+            # Leave the 4th column empty if the ref or assessed pmid not found in the dataset
+            row["Cosine Similarity"] = ""
+
+        # Make changes in the original dataframe
+        matrix_df.at[index, 'Cosine Similarity'] = row['Cosine Similarity']
+
+    matrix_df.to_csv("relish_cosine1.csv", index=False)
 
 
 if __name__ == "__main__":
@@ -329,3 +357,4 @@ if __name__ == "__main__":
     tf_idf_empty_matrix = create_matrix("tf_idf_matrix", prevalant_mesh_ids, pmids)
     fill_tf_idf_matrix(5000, tf_idf_empty_matrix, pmids, prevalant_mesh_ids, len(pmids))
     tf_idf_matrix = load_numpy_matrix(pmids, prevalant_mesh_ids, "tf_idf_matrix")
+    get_cosine_similarity("relish_relevance_matrix.csv", pmids, tf_idf_matrix)
