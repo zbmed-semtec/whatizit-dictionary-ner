@@ -315,7 +315,21 @@ def load_numpy_matrix(pmids: list, mesh_ids: list, matrix_file: str) -> np.memma
     return matrix
 
 
-def get_cosine_similarity(input_file, pmids, tfidf_matrix):
+def get_cosine_similarity(input_file: str, pmids: list, tfidf_matrix: np.memmap, output_matrix_name: str) -> None:
+    """
+    Creates a 4 column matrix by appending cosine similarity scores for all existing pairs
+    of PMIDs to the Relevance matrix.
+    Parameters
+    ----------
+    input_file : str
+        File path for relevance matrix.
+    pmids : list
+        List of all PMIDs.
+    tfidf_matrix : np.memmap
+        Numpy memory map of TF-IDF matrix.
+    output_matrix_name : str
+        File path for generated cosine similarity matrix.
+    """
     matrix_df = pd.read_csv(input_file)
 
     # Adds the empty 4th column to the file
@@ -337,27 +351,29 @@ def get_cosine_similarity(input_file, pmids, tfidf_matrix):
         # Make changes in the original dataframe
         matrix_df.at[index, 'Cosine Similarity'] = row['Cosine Similarity']
 
-    matrix_df.to_csv("relish_cosine1.csv", index=False)
+    matrix_df.to_csv(output_matrix_name, index=False, sep="\t")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--annotations_path", type=str, help="Path for annotated XML files")
-    # parser.add_argument("--mesh_file", type=str, help="Path for MESH CSV file")
+    parser.add_argument("--mesh_file", type=str, help="Path for MESH CSV file")
+    parser.add_argument("--relevance_matrix", type=str, help="Path for relevance matrix")
+    parser.add_argument("--matrix_name", type=str, help="Path for output cosine similarity matrix")
     args = parser.parse_args()
 
     namespace = {"z": "https://github.com/zbmed-semtec/whatizit-dictionary-ner#"}
     annotations, pmids = whatizit_annotation_extractor(args.annotations_path, namespace)
-    print(pmids[:5])
-    print(type(pmids[0]))
-    print(pmids[-1])
-    # mesh_ids = get_mesh_ids(args.mesh_file)
-    # prevalant_mesh_ids = get_prevalant_mesh_ids(pmids, mesh_ids, annotations)
-    # tf_empty_matrix = create_matrix("tf_matrix", prevalant_mesh_ids, pmids)
-    # fill_tf_matrix(5000, tf_empty_matrix, pmids, prevalant_mesh_ids, annotations)
-    # tf_matrix = load_numpy_matrix(pmids, prevalant_mesh_ids, "tf_matrix")
-    # dfs = get_df(tf_matrix)
-    # tf_idf_empty_matrix = create_matrix("tf_idf_matrix", prevalant_mesh_ids, pmids)
-    # fill_tf_idf_matrix(5000, tf_idf_empty_matrix, pmids, prevalant_mesh_ids, len(pmids))
-    # tf_idf_matrix = load_numpy_matrix(pmids, prevalant_mesh_ids, "tf_idf_matrix")
-    # get_cosine_similarity("relish_relevance_matrix.csv", pmids, tf_idf_matrix)
+    mesh_ids = get_mesh_ids(args.mesh_file)
+    prevalant_mesh_ids = get_prevalant_mesh_ids(pmids, mesh_ids, annotations)
+
+    tf_empty_matrix = create_matrix("tf_matrix", prevalant_mesh_ids, pmids)
+    fill_tf_matrix(5000, tf_empty_matrix, pmids, prevalant_mesh_ids, annotations)
+    tf_matrix = load_numpy_matrix(pmids, prevalant_mesh_ids, "tf_matrix")
+
+    dfs = get_df(tf_matrix)
+    tf_idf_empty_matrix = create_matrix("tf_idf_matrix", prevalant_mesh_ids, pmids)
+    fill_tf_idf_matrix(5000, tf_idf_empty_matrix, pmids, prevalant_mesh_ids, len(pmids))
+    tf_idf_matrix = load_numpy_matrix(pmids, prevalant_mesh_ids, "tf_idf_matrix")
+    
+    get_cosine_similarity(args.relevance_matrix, pmids, tf_idf_matrix, args.matrix_name)
