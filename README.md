@@ -83,7 +83,7 @@ The corresponding code script handles all of the above mentioned three stages an
 
 In this stage, we make use of the dockerized version of Whatizit that focuses mainly on the automata part coming from MONQjfa, i.e., the container does not include the web-based aplication nor includes the dictionaries for text-mining that were available at EMBL-EBI. 
 
-All the corresponding files and scripts needed for the process can be found in this [folder](/resources/whatizit/). In order to start with the annotation process, you would need to place the [Python script](/code/annotate/annotate.py) for annotation (as described in Stage 2) inside the monq folder as shown below. The directory structure is as follows:
+All the corresponding files and scripts needed for the process can be found in this [folder](/resources/whatizit/). In order to start with the annotation process, you would need to place the [Python script](/code/annotation/annotate.py) for annotation (as described in Stage 2) inside the monq folder as shown below. The directory structure is as follows:
 
 ```
 whatizit
@@ -111,7 +111,7 @@ A detailed step-by-step procedure in order to build and run the Docker container
 
 In order to evaluate how relevant a word (MeSH term) is to a document (annotated XML file) in a collection of documents (RELISH corpus), we make use of the statistical measure of TF-IDF (term frequency-inverse document frequency).
 
-The creation of the tf-idf matrices using our [code](/code/document_profiles/tfidf_matrix.py) is done in two main steps. The initial step involves preparing the TF matrix, which tallies the frequency of MeSH terms within each annotated XML file. This matrix aids in understanding the occurrence of MeSH terms in documents. Subsequently, the TF-IDF matrix is generated, considering the frequency of MeSH terms across the entire corpus. The TF-IDF values are calculated based on the product of TF and IDF (inverse document frequency) measures. The resulting matrices offer insights into term importance across the corpus.
+The creation of the tf-idf matrices using our [code](/code/document-profiles/tfidf_matrix.py) is done in two main steps. The initial step involves preparing the TF matrix, which tallies the frequency of MeSH terms within each annotated XML file. This matrix aids in understanding the occurrence of MeSH terms in documents. Subsequently, the TF-IDF matrix is generated, considering the frequency of MeSH terms across the entire corpus. The TF-IDF values are calculated based on the product of TF and IDF (inverse document frequency) measures. The resulting matrices offer insights into term importance across the corpus.
 
 To execute the code, two parameters are required: the file path to the Whatizit annotated XML files and a Bioportal-like CSV corresponding to a controlled vocabulary (MeSH in our case). The output includes two binary files storing the TF and TF-IDF matrices. 
 
