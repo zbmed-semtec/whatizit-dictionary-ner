@@ -56,7 +56,7 @@ The TF-IDF values give us an idea of how relevant a term is in our respective co
 
 |    | |
 |----|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ![Info](./images/information_mark.png)    | In order to account for only those MeSH terms that are present in the corpus and to avoid a document frequency of zero, we extract only the relevant MeSH terms before creating our matrices.                                                                                                                                                                                              |
+| ![Info](.\images\information_mark.png)    | In order to account for only those MeSH terms that are present in the corpus and to avoid a document frequency of zero, we extract only the relevant MeSH terms before creating our matrices.                                                                                                                                                                                              |
 |    | This implies that the number of columns in both the TF and TF-IDF matrices would only be a subset of the total MeSH vocabulary.                                                               |
 
 

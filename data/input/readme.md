@@ -1,4 +1,0 @@
-# Input data
-This repository takes a controlled vocabulary as input data. Currently, only Bioportal-like CSV and RDF formats are supported.
-
-We have tested our approach with two ontologies from [Bioportal](https://bioportal.bioontology.org/), namely MeSH and EDAM. We include here input files corresponding to the [EDAM ontology](https://edamontology.org/), version unstable(1.26_dev), [downloaded from BioPortal](https://bioportal.bioontology.org/ontologies/EDAM/?p=summary) on the 2022.02.16, licensed [CC-BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Please notice that we are using the same license for the output as that one coming from the input. 

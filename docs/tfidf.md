@@ -6,7 +6,7 @@ The creation of TF-IDF matrices for Whatizit annotated XML files takes as data i
 
 The entire process of annotating XML files for a required corpus (TREC and RELISH in our case) can be found [here](https://github.com/zbmed-semtec/whatizit-dictionary-ner/blob/main/docs/).
 
-The creation of the tf-idf matrices using our [code](https://github.com/zbmed-semtec/whatizit-dictionary-ner/blob/main/code/tfidf_matrix.py) is done in two main steps: 
+The creation of the tf-idf matrices using our [code](../code/document_profiles/tfidf_matrix.py) is done in two main steps: 
 
 ## Step 1 : Creation of the TF matrix.
 The TF matrix accounts for how many times a MeSH term appears in each of the annotated XML file. 
