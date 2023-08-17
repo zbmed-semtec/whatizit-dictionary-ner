@@ -69,7 +69,7 @@ The third stage handles two sub-stages of formatting. Firstly, it involves escap
 
 Secondly, the annotated XML output is modified into valid XML format, and special characters are replaced with their corresponding encoded forms using the BeautifulSoup4 XML parser.
 
-The corresponding code script handles all of the above mentioned three stages and can be found [here](/code/annotate/annotate.py). A detailed explanation of the entire process can be found [here](/docs/preprocess.md).
+The corresponding code script handles all of the above mentioned three stages and can be found [here](/code/annotation/annotate.py). A detailed explanation of the entire process can be found [here](/docs/preprocess.md).
 
 
 |    | |
