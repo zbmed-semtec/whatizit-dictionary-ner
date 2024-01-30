@@ -59,8 +59,8 @@ Let us take the term "HBB g.68A&gt;T" and see the corresponding notation in each
 --> ``` <z:mesh cui="" id="" semantics="">HBB g.68A&gt;T</z:mesh > ```
 
 
-You can find the code corresponding to the above pipeline in the [resources/monq folder](https://github.com/zbmed-semtec/whatizit-dictionary-ner/tree/main/resources/monq). The code [here](../code/annotate/annotate.py) does the necessary pre-processing and post-processing of the files and results in the correct annotations. 
+You can find the code corresponding to the above pipeline in the [resources/whatizit/monq folder](https://github.com/zbmed-semtec/whatizit-dictionary-ner/tree/main/resources/whatizit/monq). The code [here](../code/annotate/annotate.py) does the necessary pre-processing and post-processing of the files and results in the correct annotations. 
 
-The code corresponding to the creation of a dictionary for the [Medical Subject Headings vocabulary](https://www.nlm.nih.gov/mesh/meshhome.html) is in the [code folder](https://github.com/zbmed-semtec/whatizit-dictionary-ner/tree/main/code). 
+The code corresponding to the creation of a dictionary for the [Medical Subject Headings vocabulary](https://www.nlm.nih.gov/mesh/meshhome.html) is in the [code folder](https://github.com/zbmed-semtec/whatizit-dictionary-ner/tree/main/code/create-dictionary). 
 
 The documentation corresponding to the entire annotation process can be found in the [docs folder](https://github.com/zbmed-semtec/whatizit-dictionary-ner/blob/main/docs/annotate.md).
