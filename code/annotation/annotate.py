@@ -118,8 +118,8 @@ def format_output(output_path, formatted_output_path) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset", type=str, help="Name of the dataset to be annotated (TREC/RELISH)")
-    parser.add_argument("--n", type=int, help="Number of files to be annotated")
+    parser.add_argument("-d", "--dataset", type=str, help="Name of the dataset to be annotated (TREC/RELISH)")
+    parser.add_argument("-n", "--number", type=int, help="Number of files to be annotated")
     args = parser.parse_args()
     dataset = args.dataset
     n_files = args.n

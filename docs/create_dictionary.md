@@ -54,7 +54,7 @@ p[ \-_]*<[ \-_]*0\.001[^A-Za-z0-9]
 | | | 
 | :-: | :- | 
 | ![Info](./images/information_mark.png) | As the special characters & < > will be recognized by the dictionary as such (and not as their encoded version \&amp; \&lt; \&gt;) the text to be annotated should also come with the non-encoded version of those characters.  |
-| | If your text and dictionary terms use these characters, we suggest using, for instance, the ```sed``` linux command to replace the encoded version for the plain version ```sed 's/&lt;/</' sampleText.txt``` |
+| ![Info](./images/exclamation_mark.png) | If your text and dictionary terms use these characters, we suggest using, for instance, the ```sed``` linux command to replace the encoded version for the plain version ```sed 's/&lt;/</' sampleText.txt``` |
 | | |
 
 You can find the code corresponding to the creation of a dictionary for the [Medical Subject Headings vocabulary](https://www.nlm.nih.gov/mesh/meshhome.html) in the [code folder](../code). The code at [parse_csv](../code/create-dictionary/parse_csv.py) creates a dictionary of a CSV while [parser](../code/create-dictionary/parser.py) takes a turtle TTL file as input. Please be aware that due to license restrictions, we can only provide the code but not the actual data for the corresponding dictionary.
