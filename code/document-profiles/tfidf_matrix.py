@@ -1,21 +1,20 @@
 import os
-import sys
 import time
 import argparse
 import re
-import csv
+from tqdm import tqdm
 import pandas as pd
 import numpy as np
 import logging
 import xml.etree.ElementTree as ET
 from scipy import spatial
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Set
 
 
-if not os.path.exists("../logging"):
-    os.makedirs("../logging")
+if not os.path.exists("./logging"):
+    os.makedirs("./logging")
 
-logging.basicConfig(filename='../logging/relish_tfidf_matrix.log', filemode='a', level=logging.DEBUG)
+logging.basicConfig(filename='./logging/relish_tfidf_matrix.log', filemode='a', level=logging.DEBUG)
 
 
 def extract_annotated_mesh_id(tag: ET.Element) -> str:
@@ -40,7 +39,7 @@ def extract_annotated_mesh_id(tag: ET.Element) -> str:
     return mesh_id
                          
                          
-def whatizit_annotation_extractor(annotations_path: str, namespace: dict) -> Tuple[Dict, List]:
+def whatizit_annotation_extractor(annotations_path: str, namespace: dict) -> Tuple[Dict, List, Set]:
     """
     Extracts annotated MeSH terms from XML files and returns the frequency of each MeSH term in each XML file.
     Parameters
@@ -54,11 +53,14 @@ def whatizit_annotation_extractor(annotations_path: str, namespace: dict) -> Tup
     -------
     annotations : dict
         Dictionary with keys as PMID of XML file and values as a dictionary of MeSH terms with its label and frequency.
-    pmids :list
+    pmids : list
         PMIDS of all XML files.
+    prevalant_mesh_ids : set
+        Set containing all mesh ids that exist as part of the RELISH Corpus.
     """
     annotations = {}
     pmids = []
+    prevalant_mesh_ids = set()
     for file in sorted(os.listdir(annotations_path)):
         if file != '.DS_Store':
             filename = os.path.join(annotations_path, file)
@@ -70,6 +72,7 @@ def whatizit_annotation_extractor(annotations_path: str, namespace: dict) -> Tup
             annotations[pmid]["Total_terms"] = total_terms_in_doc
             for tagged in root.findall("document/passage/text/z:mesh", namespace):
                 mesh_id = extract_annotated_mesh_id(tagged)
+                prevalant_mesh_ids.add(mesh_id)
                 if mesh_id not in annotations[pmid]:
                     annotations[pmid][mesh_id] = {}
                     annotations[pmid][mesh_id]["Term"] = tagged.text
@@ -77,54 +80,7 @@ def whatizit_annotation_extractor(annotations_path: str, namespace: dict) -> Tup
                 else:
                     annotations[pmid][mesh_id]["Freq_term_in_doc"] += 1
 
-    return annotations, pmids
-
-
-def get_mesh_ids(mesh_filepath: str) -> List:
-    """
-    Extracts all MeSH Class IDs from the MeSH CSV file.
-    Parameters
-    ----------
-    mesh_filepath : str
-        Filepath to the MeSH CSV file.
-
-    Returns
-    -------
-    mesh_ids : list
-        All MeSH IDs.
-    """
-    mesh_ids = []
-    csv.field_size_limit(sys.maxsize)
-    data = pd.read_csv(mesh_filepath, engine='python')
-    for i in range(len(data)):
-        if data['Class ID'].iloc[i].startswith('http://purl.bioontology.org/ontology/MESH/'):
-            mesh_id = ((data['Class ID'].iloc[i]).split('ontology/')[1]).replace('/', '')
-            mesh_ids.append(mesh_id)
-    return mesh_ids
-
-
-def get_prevalant_mesh_ids(pmids: list, mesh_ids: list, annotations: dict) -> list:
-    """
-    Extracts only those mesh terms that are present in the given corpus.
-    Parameters
-    ----------
-    pmids : list
-        PMIDS of all XML files.
-    mesh_ids : list
-        All MeSH IDs.
-    annotations : dict
-        Dictionary of PMIDs with its corresponding mesh terms and the frequency.
-    Returns
-    -------
-    relevant_mesh_ids : list
-        List of all MeSH terms that are present in the corpus.
-    """
-    prevalant_mesh_ids = []
-    for pmid in pmids:
-        for mesh_id in mesh_ids:
-            if mesh_id in annotations[pmid] and mesh_id not in prevalant_mesh_ids:
-                prevalant_mesh_ids.append(mesh_id)
-    return prevalant_mesh_ids
+    return annotations, pmids, prevalant_mesh_ids
 
 
 def create_matrix(matrix_name: str, mesh_ids: list, pmids: list) -> np.memmap:
@@ -230,28 +186,52 @@ def get_df(tf_matrix: np.memmap) -> list:
     return dfs
 
 
-def get_tf_idf(pmid_index: int, mesh_id_index: int, len_corpus: int) -> float:
+def get_idf(len_corpus:int) -> list:
     """
-    Calculates the tf-idf values for the MeSH term in pmid article.
+    Calculates the Inverse Document Frequency across all the prevalant mesh ids.
     Parameters
     ----------
-    pmid : int
-        Article for which tf-idf value is to be calculated.
-    mesh_id : int
-        MeSH ID for which tf-idf value is to be calculated.
     len_corpus : int
-        Number of articles in the corpus.
+        Length of the RELISH corpus.
 
     Returns
     -------
-    tf_idf : float
-        tf-idf value.
+    idfs : list
+        List of idf values for all mesh ids.    
     """
-    tf_value = tf_matrix[pmid_index][mesh_id_index]
-    df_value = dfs[mesh_id_index]
-    idf_value = np.log(len_corpus/df_value)
-    tf_idf = tf_value * idf_value
-    return tf_idf
+    idfs = []
+    for mesh_id_index in range(len(prevalant_mesh_ids)):
+        df_value = dfs[mesh_id_index]
+        idf_value = np.log(len_corpus/df_value)
+        idfs.append(idf_value)
+    return idfs
+
+def get_tf_idf_vectorized(pmid_index: int, mesh_id_indices: np.array) -> np.ndarray:
+    """
+    Parameters
+    ----------
+    pmid_index : int
+        Index of the PMID for which the tf-idf values are to be computed.
+    mesh_id_indices : np.array
+        Numpy array consisting of total number of mesh terms.
+
+    Returns
+    -------
+    tf_idf_values : np.array
+        Numpy array consisting of tf-idf values for all mesh terms for the input pmid.
+    """
+    tf_values = tf_matrix[pmid_index, mesh_id_indices]
+    idf_values = np.array(idfs)[mesh_id_indices]
+    tf_idf_values = tf_values * idf_values
+    return tf_idf_values
+
+
+def get_tf_idf_vectorized(pmid_index: int, mesh_id_indices: list, len_corpus: int) -> np.ndarray:
+    tf_values = tf_matrix[pmid_index, mesh_id_indices]
+    df_values = dfs[mesh_id_indices]
+    idf_values = np.log(len_corpus / df_values)
+    tf_idf_values = tf_values * idf_values
+    return tf_idf_values
 
 
 def fill_tf_idf_matrix(chunk_size: int, tf_idf_empty_matrix: np.memmap, pmids: list, mesh_ids: list, len_corpus: int) -> np.memmap:
@@ -278,6 +258,9 @@ def fill_tf_idf_matrix(chunk_size: int, tf_idf_empty_matrix: np.memmap, pmids: l
     tracking_counter = 0
     start_time = time.time()
     logging.info("Creating tf-idf matrix")
+
+    mesh_id_indices = np.arange(len(mesh_ids))
+
     for pmid_index, pmid in enumerate(pmids):
         # Refresh from memory
         if tracking_counter == chunk_size:
@@ -287,8 +270,7 @@ def fill_tf_idf_matrix(chunk_size: int, tf_idf_empty_matrix: np.memmap, pmids: l
 
             tracking_counter = 0
 
-        for mesh_id_index, prevalent_mesh_id_index in enumerate(mesh_ids):
-            tf_idf_empty_matrix[pmid_index][mesh_id_index] = get_tf_idf(pmid_index, mesh_id_index, len_corpus)
+        tf_idf_empty_matrix[pmid_index, :] = get_tf_idf_vectorized(pmid_index, mesh_id_indices, len_corpus)
 
         tracking_counter += 1
 
@@ -315,6 +297,7 @@ def load_numpy_matrix(pmids: list, mesh_ids: list, matrix_file: str) -> np.memma
     return matrix
 
 
+
 def get_cosine_similarity(input_file: str, pmids: list, tfidf_matrix: np.memmap, output_matrix_name: str) -> None:
     """
     Creates a 4 column matrix by appending cosine similarity scores for all existing pairs
@@ -330,50 +313,57 @@ def get_cosine_similarity(input_file: str, pmids: list, tfidf_matrix: np.memmap,
     output_matrix_name : str
         File path for generated cosine similarity matrix.
     """
-    matrix_df = pd.read_csv(input_file)
+    matrix_df = pd.read_csv(input_file, sep='\t', low_memory= False)
 
-    # Adds the empty 4th column to the file
-    matrix_df["Cosine Similarity"] = ""
+    tf_idf_dict = {pmid : tfidf_matrix[index] for index, pmid in enumerate(pmids)}
+    pmid_pairs = list(zip(matrix_df["PMID1"], matrix_df["PMID2"]))
 
-    for index, row in matrix_df.iterrows():
-        ref_pmid = str(row["PMID Reference"])
-        assessed_pmid = str(row["PMID Assessed"])
+    cosine_similarities = []
+
+    for ref_pmid, assessed_pmid in tqdm(pmid_pairs, total=len(pmid_pairs), desc="Calculating Cosine Similarities"):
+        cosine_similarity = None
         try:
-            # Determine the cosine similarity of the ref and assessed pmids and add to the 4th column
-            ref_pmid_index = pmids.index(ref_pmid)
-            assessed_pmid_index = pmids.index(assessed_pmid)
-            row["Cosine Similarity"] = round((1 - spatial.distance.cosine(tfidf_matrix[ref_pmid_index], tfidf_matrix[assessed_pmid_index])), 2)
+            ref_pmid_vector = tf_idf_dict.get(str(ref_pmid))
+            assessed_pmid_vector = tf_idf_dict.get(str(assessed_pmid))
 
+            if ref_pmid_vector is not None and assessed_pmid_vector is not None:
+                cosine_similarity = round(1 - spatial.distance.cosine(ref_pmid_vector, assessed_pmid_vector), 2)
         except:
-            # Leave the 4th column empty if the ref or assessed pmid not found in the dataset
-            row["Cosine Similarity"] = ""
+            cosine_similarity = ""
+        cosine_similarities.append(cosine_similarity)
+    
+    matrix_df['Cosine Similarity'] = cosine_similarities
 
-        # Make changes in the original dataframe
-        matrix_df.at[index, 'Cosine Similarity'] = row['Cosine Similarity']
-
-    matrix_df.to_csv(output_matrix_name, index=False, sep="\t")
+    matrix_df.to_csv(output_matrix_name, index=False, sep="\t", columns=['PMID1', 'PMID2', 'Relevance', 'Cosine Similarity'])
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--annotations_path", type=str, help="Path for annotated XML files")
-    parser.add_argument("--mesh_file", type=str, help="Path for MESH CSV file")
-    parser.add_argument("--relevance_matrix", type=str, help="Path for relevance matrix")
-    parser.add_argument("--matrix_name", type=str, help="Path for output cosine similarity matrix")
+    parser.add_argument("-a", "--annotations_path", type=str, help="Path for annotated XML files")
+    parser.add_argument("-d", "--mesh_dict_file", type=str, help="Path for MESH MWT dictionary")
+    parser.add_argument("-r", "--relevance_matrix", type=str, help="Path for relevance matrix")
+    parser.add_argument("-m", "--matrix_name", type=str, help="Path for output cosine similarity matrix")
     args = parser.parse_args()
 
     namespace = {"z": "https://github.com/zbmed-semtec/whatizit-dictionary-ner#"}
-    annotations, pmids = whatizit_annotation_extractor(args.annotations_path, namespace)
-    mesh_ids = get_mesh_ids(args.mesh_file)
-    prevalant_mesh_ids = get_prevalant_mesh_ids(pmids, mesh_ids, annotations)
+    annotations, pmids, prevalant_mesh_ids = whatizit_annotation_extractor(args.annotations_path, namespace)
+    logging.info('Extracted annotations and prevalant mesh terms.')
 
     tf_empty_matrix = create_matrix("tf_matrix", prevalant_mesh_ids, pmids)
     fill_tf_matrix(5000, tf_empty_matrix, pmids, prevalant_mesh_ids, annotations)
     tf_matrix = load_numpy_matrix(pmids, prevalant_mesh_ids, "tf_matrix")
+    logging.info('Created TF matrix.')
 
     dfs = get_df(tf_matrix)
+    logging.info('Calculated document frequencies.')
+    
+    idfs = get_idf(len(pmids))
+    logging.info('Calculated inverse document frequencies.')
+
     tf_idf_empty_matrix = create_matrix("tf_idf_matrix", prevalant_mesh_ids, pmids)
     fill_tf_idf_matrix(5000, tf_idf_empty_matrix, pmids, prevalant_mesh_ids, len(pmids))
     tf_idf_matrix = load_numpy_matrix(pmids, prevalant_mesh_ids, "tf_idf_matrix")
-    
+    logging.info('Created TF-IDF matrix.')
+
     get_cosine_similarity(args.relevance_matrix, pmids, tf_idf_matrix, args.matrix_name)
+    logging.info('Calculated cosine similarity scores.')
