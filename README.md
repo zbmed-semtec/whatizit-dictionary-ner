@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15096055.svg)](https://doi.org/10.5281/zenodo.15096055)
+
 # **whatizit-dictionary-ner**: A Dictionary-based NER Approach for TF-IDF Vector Generation using Whatizit tool
 
 This repository contains code and documentation for a dictionary-based Named Entity Recognition (NER) approach to generate TF-IDF vectors using the [Whatizit](https://academic.oup.com/bioinformatics/article/24/2/296/227269?login=true) annotation tool. It involves preparing input XML files and annotating them using Whatizit against a controlled vocabulary, in our case, the [Medical Subject Headings](https://www.nlm.nih.gov/mesh/meshhome.html) (MeSH) ontology. 
