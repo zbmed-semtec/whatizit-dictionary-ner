@@ -1,4 +1,5 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15096055.svg)](https://doi.org/10.5281/zenodo.15096055)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15096055.svg)](https://doi.org/10.5281/zenodo.15096055) 
+![Status](https://img.shields.io/badge/Status-inactive-orange)
 
 # **whatizit-dictionary-ner**: A Dictionary-based NER Approach for TF-IDF Vector Generation using Whatizit tool
 
